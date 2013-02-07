@@ -1,0 +1,211 @@
+set cut_paste_input [stack 0]
+version 6.1 v2
+push $cut_paste_input
+Group {
+ name chroma_Smear
+ tile_color 0xff7b2cff
+ selected true
+ addUserKnob {20 chromaSmear l "chroma Smear"}
+ addUserKnob {26 ""}
+ addUserKnob {7 abberation R -5 5}
+ abberation 3
+ addUserKnob {26 ""}
+ addUserKnob {41 translate T Transform1.translate}
+ addUserKnob {41 rotate T Transform1.rotate}
+ addUserKnob {41 scale T Transform1.scale}
+ addUserKnob {41 center T Transform1.center}
+ addUserKnob {41 opacity l fade T Radial1.opacity}
+ addUserKnob {26 ""}
+ addUserKnob {7 Mask_softness l "Radial Mask"}
+ addUserKnob {26 ""}
+ addUserKnob {26 credit l "" +STARTLINE T "Luc Julien 2010 "}
+}
+ Radial {
+  inputs 0
+  cliptype none
+  invert true
+  opacity 0.25
+  area {{curve i} {curve i} {input.width i} {input.height i}}
+  softness {{parent.Mask_softness*-1+1+.5 i x1 0.585}}
+  plinear true
+  name Radial1
+  xpos 116
+  ypos -35
+ }
+ Input {
+  inputs 0
+  name Input1
+  xpos -210
+  ypos -317
+ }
+set N1da02b90 [stack 0]
+ Remove {
+  name Remove1
+  xpos 31
+  ypos -322
+ }
+ AdjBBox {
+  numpixels {{width/4} {width/4}}
+  name AdjBBox1
+  xpos 31
+  ypos -200
+ }
+ Expression {
+  expr0 x
+  expr1 y
+  name Expression1
+  xpos 31
+  ypos -176
+ }
+set N1da3cc50 [stack 0]
+ Dot {
+  name Dot2
+  xpos -79
+  ypos -173
+ }
+ Transform {
+  center {{input.width/2 i x1 110} {input.height/2 i x1 -84}}
+  black_outside false
+  name Transform1
+  xpos -113
+  ypos -152
+ }
+push $N1da3cc50
+ Merge2 {
+  inputs 2
+  operation minus
+  name Merge1
+  xpos 31
+  ypos -152
+ }
+ Invert {
+  channels rgba
+  name Invert1
+  xpos 31
+  ypos -128
+ }
+ Merge2 {
+  inputs 2
+  operation multiply
+  name Merge2
+  xpos 31
+  ypos 21
+ }
+push $N1da02b90
+ Copy {
+  inputs 2
+  from0 rgba.red
+  to0 forward.u
+  from1 rgba.green
+  to1 forward.v
+  name Copy1
+  xpos -210
+  ypos 10
+ }
+set N1da59140 [stack 0]
+ Shuffle {
+  red black
+  green black
+  name Shuffle3
+  xpos -119
+  ypos 88
+ }
+ VectorBlur {
+  channels {-rgba.red -rgba.green rgba.blue rgba.alpha}
+  uv forward
+  scale -1
+  offset {{-.5*abberation*.8 i}}
+  name VectorBlur3
+  xpos -119
+  ypos 112
+ }
+ Expression {
+  expr3 a*0.114
+  name Expression4
+  xpos -119
+  ypos 146
+ }
+push $N1da59140
+ Shuffle {
+  red black
+  blue black
+  name Shuffle2
+  xpos -210
+  ypos 89
+ }
+ VectorBlur {
+  channels {-rgba.red rgba.green -rgba.blue rgba.alpha}
+  uv forward
+  scale -1
+  offset {{-.5*abberation*.6 i}}
+  name VectorBlur2
+  xpos -210
+  ypos 113
+ }
+ Expression {
+  expr3 a*0.587
+  name Expression3
+  xpos -210
+  ypos 147
+ }
+push $N1da59140
+ Shuffle {
+  green black
+  blue black
+  name Shuffle1
+  xpos -297
+  ypos 89
+ }
+ VectorBlur {
+  channels {rgba.red -rgba.green -rgba.blue rgba.alpha}
+  uv forward
+  scale -1
+  offset {{-.5*abberation*.4 i}}
+  name VectorBlur1
+  xpos -297
+  ypos 113
+ }
+ Expression {
+  expr3 a*0.299
+  name Expression2
+  xpos -297
+  ypos 147
+ }
+ Merge2 {
+  inputs 2
+  operation plus
+  name Merge3
+  xpos -248
+  ypos 202
+ }
+ Merge2 {
+  inputs 2
+  operation plus
+  name Merge4
+  xpos -182
+  ypos 246
+ }
+set N1daa9750 [stack 0]
+ Crop {
+  box {{curve i} {curve i} {input.width i} {input.height i}}
+  name Crop1
+  xpos -182
+  ypos 293
+ }
+set N1dab1810 [stack 0]
+ Output {
+  name Output1
+  xpos -182
+  ypos 391
+ }
+push $N1daa9750
+push $N1dab1810
+ Viewer {
+  inputs 2
+  input_process false
+  name Viewer1
+  selected true
+  xpos -3
+  ypos 246
+ }
+end_group

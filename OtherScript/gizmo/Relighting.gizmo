@@ -1,0 +1,219 @@
+#! C:/Program Files/Nuke6.0v1/Nuke6.0.exe -nx
+version 6.0 v1
+Gizmo {
+ inputs 3
+ help "Connect an attenuation map (i.e. map showing Viewing vector,or  normalized -I, like a light shining down the cam +Z axis) and a normal map. The order of the two inputs  is irrelevant. The result is similar to a rim lighting shader, with controls for the width and intensity of the effect."
+ tile_color 0xffff0000
+ addUserKnob {20 "" l User}
+ addUserKnob {7 RimLighting_UserEdgeWidth l "Edge Width"}
+ RimLighting_UserEdgeWidth 0.5
+ addUserKnob {7 RimLighting_UserEdgeAmount l "Edge Amount"}
+ RimLighting_UserEdgeAmount 1
+ addUserKnob {12 rim_light_pos l "Rim Light Position"}
+ addUserKnob {7 rim_depth l "Distance from Camera" R 0 5000}
+ addUserKnob {26 ""}
+ addUserKnob {6 nn l "Normalize the Normals?" -STARTLINE}
+ addUserKnob {26 ""}
+ addUserKnob {18 gamma_cc l "Gamma CC" R 0 5}
+ gamma_cc {1 1 1}
+ addUserKnob {18 gain_cc l "Gain CC" R 0 5}
+ gain_cc 1
+ addUserKnob {7 cc_mix l "CC Mix"}
+ cc_mix 1
+}
+ Input {
+  inputs 0
+  name P
+  xpos -260
+  ypos -106
+  number 2
+ }
+add_layer {o_Pobj o_Pobj.red o_Pobj.green o_Pobj.blue}
+ Shuffle {
+  in o_Pobj
+  out rgb
+  name Shuffle1
+  xpos -260
+  ypos -36
+ }
+ Unpremult {
+  name Unpremult2
+  xpos -260
+  ypos -10
+ }
+set N10ee08b0 [stack 0]
+ Input {
+  inputs 0
+  name N
+  xpos -150
+  ypos -394
+  number 1
+ }
+ Input {
+  inputs 0
+  name ALPHA
+  xpos -40
+  ypos -322
+ }
+add_layer {o_Nobj o_Nobj.red o_Nobj.green o_Nobj.blue}
+ ShuffleCopy {
+  inputs 2
+  in o_Nobj
+  red red
+  green green
+  blue blue
+  alpha alpha2
+  name ShuffleCopy1
+  tile_color 0x9e3c6300
+  xpos -150
+  ypos -322
+ }
+ Unpremult {
+  name Unpremult1
+  xpos -150
+  ypos -298
+ }
+ Multiply {
+  channels {-rgba.red -rgba.green rgba.blue -rgba.alpha}
+  value -1
+  name SWITCH_HANDEDNESS
+  xpos -150
+  ypos -280
+  disable true
+ }
+ Matrix {
+  channels rgb
+  matrix {
+      {1 2 1}
+      {2 4 2}
+      {1 2 1}
+    }
+  normalize true
+  name AA
+  xpos -150
+  ypos -250
+ }
+ Expression {
+  temp_name0 length
+  temp_expr0 sqrt(pow2(Bg)+pow2(Br)+pow2(Bb))
+  expr0 Br/(length+0.00001)
+  expr1 Bg/(length+0.00001)
+  expr2 Bb/(length+0.00001)
+  expr3 Ba
+  name Nn
+  xpos -150
+  ypos -178
+  disable {{nn.0==0 i}}
+ }
+set N5c0b410 [stack 0]
+ Dot {
+  name Dot2
+  xpos -336
+  ypos -174
+ }
+ Dot {
+  name Dot3
+  xpos -336
+  ypos 42
+ }
+ MergeExpression {
+  inputs 2
+  temp_name0 Lr
+  temp_expr0 "(parent.rim_light_pos.x - input.width/2)  - Ar"
+  temp_name1 Lg
+  temp_expr1 "(parent.rim_light_pos.y - input.height/2) - Ag"
+  temp_name2 Lb
+  temp_expr2 "parent.rim_depth  - Ab"
+  temp_name3 Llength
+  temp_expr3 sqrt(pow2(Lr)+pow2(Lg)+pow2(Lb))+0.00001
+  expr0 (Lr/Llength)*Br+(Lg/Llength)*Bg+(Lb/Llength)*Bb
+  expr1 (Lr/Llength)*Br+(Lg/Llength)*Bg+(Lb/Llength)*Bb
+  expr2 (Lr/Llength)*Br+(Lg/Llength)*Bg+(Lb/Llength)*Bb
+  expr3 Ba
+  name LdotN
+  xpos -260
+  ypos 38
+  addUserKnob {20 "" l User}
+ }
+push $N10ee08b0
+ Expression {
+  temp_name0 Plength
+  temp_expr0 sqrt(pow2(Br)+pow2(Bg)+pow2(Bb))+0.00001
+  expr0 Br/Plength
+  expr1 Bg/Plength
+  expr2 Bb/Plength
+  name I_normalized
+  xpos -40
+  ypos -10
+ }
+ Multiply {
+  channels rgb
+  value -1
+  name V
+  xpos -40
+  ypos 14
+ }
+push $N5c0b410
+ Dot {
+  name Dot4
+  xpos 104
+  ypos -174
+ }
+ Dot {
+  name Dot1
+  xpos 104
+  ypos 42
+ }
+ MergeExpression {
+  inputs 2
+  temp_name0 VdotNf
+  temp_expr0 "(Ar*Br) + (Ag*Bg) + (Ab*Bb)"
+  temp_name1 edgeWidth
+  temp_expr1 parent.RimLighting_UserEdgeWidth
+  temp_name2 edgeScale
+  temp_expr2 edgeWidth>0?pow(1-VdotNf,log(edgeWidth)/log(0.5)):0
+  temp_name3 edgeAmt
+  temp_expr3 parent.RimLighting_UserEdgeAmount
+  expr0 smoothstep(0,1,edgeAmt*edgeScale)
+  expr1 smoothstep(0,1,edgeAmt*edgeScale)
+  expr2 smoothstep(0,1,edgeAmt*edgeScale)
+  name RimLighting
+  xpos -40
+  ypos 38
+  addUserKnob {20 "" l User}
+ }
+ Merge2 {
+  inputs 2
+  operation multiply
+  name Multiply
+  xpos -150
+  ypos 38
+ }
+ CCorrect {
+  gamma {{gamma_cc.r i} {gamma_cc.g i} {gamma_cc.b i} 1}
+  gain {{gain_cc.r i} {gain_cc.g i} {gain_cc.b i} 1}
+  mix {{cc_mix}}
+  name CCorrect1
+  tile_color 0x7aa9ff00
+  xpos -150
+  ypos 62
+ }
+ Premult {
+  name Premult1
+  xpos -150
+  ypos 88
+ }
+set N10f8fac0 [stack 0]
+ Output {
+  name Output1
+  xpos -150
+  ypos 254
+ }
+push $N10f8fac0
+ Viewer {
+  input_process false
+  name Viewer1
+  xpos 290
+  ypos 206
+ }
+end_group

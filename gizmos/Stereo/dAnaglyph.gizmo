@@ -1,0 +1,116 @@
+#! /Volumes/Macintosh HD/Applications/Nuke6.3v1/NukeX6.3v1.app/../Nuke6.3v1.app/Contents/MacOS/Nuke6.3v1 -nx
+version 6.3 v1
+Gizmo {
+ help "@b;dAanaglyph v1@n; for Nuke 6.0 and above\n\nA simple Anaglyph node that allows custom colors to be used.\n\nCreated by Diogo Girondi\ndiogogirondi@gmail.com"
+ addUserKnob {20 danaglyph l "dAnaglyph v1"}
+ addUserKnob {41 view_1 l "Left Eye" T OneView2.view}
+ addUserKnob {18 left_color l " " -STARTLINE}
+ left_color {1 0 0}
+ addUserKnob {41 view l "Right Eye" T OneView1.view}
+ addUserKnob {18 right_color l " " -STARTLINE}
+ right_color {0 1 1}
+ addUserKnob {7 coloramount l "Color Amount"}
+ coloramount 1
+ addUserKnob {3 hoffset l Offset}
+ addUserKnob {6 switch_views l "Switch Views" -STARTLINE}
+ addUserKnob {26 presets l "@b;Presets"}
+ addUserKnob {22 redcyan l Red/Cyan T "n = nuke.thisNode()\nn\['left_color'].setValue((1,0,0))\nn\['right_color'].setValue((0,1,1))" +STARTLINE}
+ addUserKnob {22 greenred l Green/Red -STARTLINE T "n = nuke.thisNode()\nn\['left_color'].setValue((0,1,0))\nn\['right_color'].setValue((1,0,0))"}
+ addUserKnob {22 blueamber l Blue/Amber -STARTLINE T "n = nuke.thisNode()\nn\['left_color'].setValue((0,0,1))\nn\['right_color'].setValue((1,0.32,0))"}
+}
+ Input {
+  inputs 0
+  name Input
+  xpos 0
+ }
+set N1df657d0 [stack 0]
+push $N1df657d0
+ OneView {
+  view right
+  name OneView1
+  xpos -62
+  ypos 96
+ }
+set N1df8d480 [stack 0]
+push $N1df657d0
+ OneView {
+  name OneView2
+  xpos 61
+  ypos 96
+ }
+set N1df6d1b0 [stack 0]
+ Switch {
+  inputs 2
+  which {{parent.switch_views i}}
+  name Switch2
+  xpos 61
+  ypos 175
+ }
+ Saturation {
+  saturation {{parent.coloramount i}}
+  name Saturation1
+  xpos 61
+  ypos 258
+ }
+ set C1df2edf0 [stack 0]
+ Multiply {
+  channels rgb
+  value {{parent.right_color.r i} {parent.right_color.g i} {parent.right_color.b i} 1}
+  name Multiply2
+  xpos 61
+  ypos 287
+ }
+ Transform {
+  translate {{parent.hoffset i} 0}
+  center {1024 576}
+  name Transform2
+  xpos 61
+  ypos 316
+ }
+push $N1df6d1b0
+push $N1df8d480
+ Switch {
+  inputs 2
+  which {{parent.switch_views i}}
+  name Switch1
+  xpos -62
+  ypos 177
+ }
+clone $C1df2edf0 {
+  xpos -62
+  ypos 258
+  selected false
+ }
+ Multiply {
+  channels rgb
+  value {{parent.left_color.r i} {parent.left_color.g i} {parent.left_color.b i} 1}
+  name Multiply1
+  xpos -62
+  ypos 287
+ }
+ Transform {
+  translate {{-parent.hoffset i} 0}
+  center {1024 576}
+  name Transform1
+  xpos -62
+  ypos 316
+ }
+ Merge2 {
+  inputs 2
+  operation plus
+  name Merge1
+  xpos 0
+  ypos 388
+ }
+ CopyBBox {
+  inputs 2
+  name CopyBBox1
+  xpos 0
+  ypos 417
+ }
+ Output {
+  name Output1
+  xpos 0
+  ypos 485
+ }
+end_group

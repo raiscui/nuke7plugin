@@ -1,0 +1,95 @@
+#! /Applications/Nuke6.0v6-32/Nuke6.0v6.app/Contents/MacOS/Nuke6.0v6 -nx
+version 6.0 v6
+Gizmo {
+ help "Creates a edge matte with blur, based on an existing alpha channel.\n\nThis matte is used in conjustion with a Blur node to sofen the edges \nof the foreground image (Input of this node) after it’s Merged \nover the background.  \n\nMatte Size: creates a thin matte line from the incoming Alpha channel.  Created equality from the inside and outside of the Alpha.\n\nMatte Blur: blurs the newly created matte.\n\nBlur Quality: Higher values increase quality and render time.\n\nExtra Blur: Adds an extra layer of blur over the matte.\n\nExtra Blur Filter Type: Box is quickest but lowest quality, Gaussian is slowest but best quality.\n\nExtra Blur Mix: Adjusts the opacity of the Extra Blur be added.\n\n...\n\nAny questions or comments contact matt@spherevfx.com"
+ addUserKnob {20 User}
+ addUserKnob {41 size l "Matte Size" T Erode2.size}
+ addUserKnob {41 blur l "Matte Blur" T Erode2.blur}
+ addUserKnob {41 quality l "Edge Quality" T Erode2.quality}
+ addUserKnob {26 ""}
+ addUserKnob {41 size_1 l "Extra Blur" T Blur2.size}
+ addUserKnob {41 filter l "Extra Blur Filter Type" T Blur2.filter}
+ addUserKnob {41 mix l "Extra Blur Mix" T Blur2.mix}
+ addUserKnob {26 ""}
+ addUserKnob {26 www l "Created by spherevfx "}
+}
+ Input {
+  inputs 0
+  name Alpha_Input
+  xpos 84
+  ypos -259
+ }
+ Dot {
+  name Dot5
+  xpos 118
+  ypos -217
+ }
+set N2595fb90 [stack 0]
+ Dot {
+  name Dot2
+  xpos 169
+  ypos -132
+ }
+ Erode {
+  size {{Erode2.size.main i}}
+  blur {{Erode2.blur.main i}}
+  quality {{Erode2.quality.main i}}
+  name Erode1
+  xpos 135
+  ypos -77
+ }
+push $N2595fb90
+ Invert {
+  channels alpha
+  name Invert1
+  xpos 25
+  ypos -129
+ }
+ Erode {
+  size 1
+  name Erode2
+  label MASTER
+  xpos 25
+  ypos -84
+ }
+ Merge2 {
+  inputs 2
+  operation plus
+  name Merge2
+  xpos 87
+  ypos 15
+ }
+ Invert {
+  channels alpha
+  name Invert2
+  xpos 87
+  ypos 53
+ }
+ Blur {
+  channels alpha
+  name Blur2
+  selected true
+  xpos 87
+  ypos 104
+ }
+ Shuffle {
+  red alpha
+  green alpha
+  blue alpha
+  name Shuffle1
+  label "RGBA=A\n"
+  xpos 87
+  ypos 150
+  postage_stamp true
+ }
+ Dot {
+  name Dot3
+  xpos 121
+  ypos 249
+ }
+ Output {
+  name Output1
+  xpos 87
+  ypos 293
+ }
+end_group

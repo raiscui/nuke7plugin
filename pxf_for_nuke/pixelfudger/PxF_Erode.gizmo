@@ -1,0 +1,85 @@
+Group {
+ name PxF_Erode
+ inputs 2
+ addUserKnob {20 User}
+ addUserKnob {41 size l Blur T Blur1.size}
+ addUserKnob {41 value l Gamma T Gamma1.value}
+ addUserKnob {26 ""}
+ addUserKnob {26 t l "" -STARTLINE T "PxF_Erode 2.0.2 - (c) 2012 - Xavier Bourque - www.pixelfudger.com"}
+}
+ Input {
+  inputs 0
+  name mask
+  xpos 675
+  ypos 423
+  number 1
+ }
+ Input {
+  inputs 0
+  name img
+  xpos 501
+  ypos -28
+ }
+set N13ed8d90 [stack 0]
+ Dot {
+  name Dot1
+  xpos 735
+  ypos 245
+ }
+push $N13ed8d90
+ Unpremult {
+  name Unpremult1
+  xpos 501
+  ypos 49
+ }
+set N12ce7f70 [stack 0]
+ Blur {
+  channels alpha
+  size 5
+  name Blur1
+  xpos 381
+  ypos 93
+ }
+ Gamma {
+  channels alpha
+  value 0.5
+  name Gamma1
+  xpos 381
+  ypos 153
+ }
+push $N12ce7f70
+ Merge2 {
+  inputs 2
+  operation in
+  name In
+  xpos 381
+  ypos 287
+ }
+push $N12ce7f70
+ ShuffleCopy {
+  inputs 2
+  name ShuffleCopy1
+  xpos 510
+  ypos 356
+ }
+ Premult {
+  name Premult1
+  xpos 510
+  ypos 399
+ }
+ Keymix {
+  inputs 3
+  invertMask true
+  bbox B
+  name Keymix1
+  selected true
+  xpos 508
+  ypos 477
+  disable {{"\[exists parent.input1] ? 0 : 1" i x1 0}}
+ }
+ Output {
+  name Output1
+  xpos 510
+  ypos 546
+ }
+end_group

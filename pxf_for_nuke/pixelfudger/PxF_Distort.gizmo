@@ -1,0 +1,268 @@
+Group {
+ inputs 3
+ name PxF_Distort
+ selected true
+ xpos -211
+ ypos 109
+ addUserKnob {20 User}
+ addUserKnob {41 channels T IDistort1.channels}
+ addUserKnob {7 amount R -2 2}
+ amount 0.08
+ addUserKnob {6 fine +STARTLINE}
+ fine 1
+ addUserKnob {7 blurLens R 0 100}
+ blurLens 1
+ addUserKnob {6 wrap +STARTLINE}
+ addUserKnob {4 lensChannel M {red green blue alpha}}
+ lensChannel alpha
+ addUserKnob {41 filter T IDistort1.filter}
+ addUserKnob {26 ""}
+ addUserKnob {26 t l "" +STARTLINE T "PxF_Distort 2.0.2 - (c) 2012 - Xavier Bourque - www.pixelfudger.com"}
+}
+ Input {
+  inputs 0
+  name mask
+  xpos 168
+  ypos 357
+  number 2
+ }
+ Input {
+  inputs 0
+  name img
+  xpos -135
+  ypos -595
+ }
+ Dot {
+  name Dot3
+  xpos -87
+  ypos -503
+ }
+set N1e8c13c0 [stack 0]
+ Dot {
+  name Dot2
+  xpos -435
+  ypos -121
+ }
+set N1e8dd240 [stack 0]
+ Input {
+  inputs 0
+  name lens
+  xpos 108
+  ypos -608
+  number 1
+ }
+ Dot {
+  name Dot4
+  xpos 142
+  ypos -538
+ }
+set N1e89b6e0 [stack 0]
+ Shuffle {
+  red black
+  green black
+  blue black
+  name Shuffle4
+  label alpha
+  xpos 245
+  ypos -401
+ }
+push $N1e89b6e0
+ Shuffle {
+  red black
+  green black
+  blue black
+  alpha blue
+  name Shuffle3
+  label blue
+  xpos 152
+  ypos -399
+ }
+push $N1e89b6e0
+ Shuffle {
+  red black
+  green black
+  blue black
+  alpha green
+  name Shuffle2
+  label green
+  xpos 63
+  ypos -401
+ }
+push $N1e89b6e0
+ Shuffle {
+  red black
+  green black
+  blue black
+  alpha red
+  name Shuffle1
+  label red
+  xpos -30
+  ypos -403
+ }
+ Switch {
+  inputs 4
+  which {{lensChannel i}}
+  name Switch1
+  xpos 106
+  ypos -334
+ }
+ Dot {
+  name Dot1
+  xpos 134
+  ypos -245
+ }
+set N1e8b3b50 [stack 0]
+push $N1e8b3b50
+ Position {
+  translate {1 0}
+  name Position1
+  xpos 19
+  ypos -209
+ }
+ Merge2 {
+  inputs 2
+  operation minus
+  name Merge15
+  xpos 80
+  ypos -167
+ }
+push $N1e8b3b50
+push $N1e8b3b50
+ Position {
+  translate {0 1}
+  name Position2
+  xpos 233
+  ypos -219
+ }
+ Merge2 {
+  inputs 2
+  operation minus
+  name Merge21
+  xpos 185
+  ypos -174
+ }
+ ShuffleCopy {
+  inputs 2
+  red alpha
+  green alpha2
+  blue blue
+  name ShuffleCopy3
+  xpos 116
+  ypos -116
+ }
+ Blur {
+  size {{"blurLens * width / 2048 * 2.75" i x1 30}}
+  name Blur13
+  xpos 116
+  ypos -92
+ }
+ Multiply {
+  value {{"fine ? pow(blurLens,0.395) * amount * width * 3.597 / 10 : pow(blurLens,0.395) * amount * width * 3.597" i}}
+  name Multiply5
+  xpos 116
+  ypos -43
+ }
+set N15423da0 [stack 0]
+ Expression {
+  channel3 {-rgba.red -rgba.green -rgba.blue rgba.alpha}
+  expr3 "r == 0 && g == 0 ? 1 : 0"
+  name Expression1
+  xpos 127
+  ypos 123
+ }
+push $N1e8dd240
+push $N15423da0
+push $N1e8c13c0
+ Mirror {
+  Horizontal true
+  Vertical true
+  name Mirror2
+  xpos -113
+  ypos -253
+  disable {{"1 - wrap" i}}
+ }
+ Reformat {
+  type scale
+  scale 3
+  filter Impulse
+  name Reformat2
+  xpos -113
+  ypos -226
+  disable {{"1 - wrap" i}}
+ }
+ Tile {
+  rows 3
+  mirrorRows true
+  columns 3
+  mirrorCols true
+  filter Impulse
+  name Tile1
+  xpos -113
+  ypos -202
+  disable {{"1 - wrap" i}}
+ }
+ Reformat {
+  type scale
+  scale 0.333333
+  resize none
+  filter Impulse
+  name Reformat3
+  xpos -113
+  ypos -178
+  disable {{"1 - wrap" i}}
+ }
+ Transform {
+  translate {-1 -1}
+  center {3072 2334}
+  black_outside false
+  name Transform1
+  xpos -113
+  ypos -144
+  disable {{"1 - wrap" i}}
+ }
+ Copy {
+  inputs 2
+  from0 rgba.red
+  to0 forward.u
+  from1 rgba.green
+  to1 forward.v
+  name Copy1
+  xpos -113
+  ypos -50
+ }
+ IDistort {
+  channels rgb
+  uv forward
+  blur -depth.Z
+  filter Cubic
+  name IDistort1
+  xpos -113
+  ypos 83
+ }
+ Remove {
+  channels forward
+  name Remove1
+  xpos -113
+  ypos 136
+ }
+ Keymix {
+  inputs 3
+  name Keymix1
+  xpos -113
+  ypos 286
+ }
+ Keymix {
+  inputs 3
+  invertMask true
+  bbox B
+  name Keymix2
+  xpos -113
+  ypos 405
+  disable {{"\[exists parent.input2] ? 0 : 1" i x1 0}}
+ }
+ Output {
+  name Output1
+  xpos -113
+  ypos 515
+ }
+end_group

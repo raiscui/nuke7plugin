@@ -1,0 +1,252 @@
+#! C:/Programme/Nuke5.1v6/Nuke5.1.exe -nx
+version 5.1600
+Gizmo {
+ inputs 4
+ addUserKnob {20 settings l Settings}
+ addUserKnob {41 light_type l "Light Type" t "Choose \"Perspective\" for point and spot lights\nChoose \"Orthographic\" for parallel lights" T ProjectionCam.projection_mode}
+ addUserKnob {41 shquali l "Shadow Quality" t "Choose as high as possible without cutting the edges of the shadow. Sometimes need to be lowered close to 0. Move the light closer to the geometry in this case." T ProjectionCam.focal}
+ addUserKnob {41 samples l "Scanline Samples" T ScanlineRender1.samples}
+ addUserKnob {26 "" l " " T "Show only non-occluded shadows"}
+ addUserKnob {41 visible_shadow l disable T ChannelMerge1.disable}
+}
+ BackdropNode {
+  inputs 0
+  name ShadowProjection
+  xpos 1042
+  ypos -456
+  bdwidth 462
+  bdheight 496
+ }
+ BackdropNode {
+  inputs 0
+  name Textures
+  xpos 351
+  ypos -638
+  bdwidth 1073
+  bdheight 121
+ }
+ BackdropNode {
+  inputs 0
+  name ShadowMap
+  xpos 640
+  ypos -455
+  bdwidth 381
+  bdheight 496
+ }
+ Input {
+  inputs 0
+  name Camera
+  xpos 1142
+  ypos -579
+  number 3
+ }
+set N4efd348 [stack 0]
+ Constant {
+  inputs 0
+  channels rgb
+  name Constant2
+  xpos 881
+  ypos -405
+ }
+ Input {
+  inputs 0
+  name ReceivingGeo
+  xpos 832
+  ypos -576
+  number 1
+ }
+ ApplyMaterial {
+  inputs 2
+  name ApplyMaterial1
+  selected true
+  xpos 825
+  ypos -294
+ }
+set N4ef0ac8 [stack 0]
+ Constant {
+  inputs 0
+  channels rgb
+  color 1
+  name Constant1
+  xpos 768
+  ypos -404
+ }
+ Input {
+  inputs 0
+  name CastingGeo
+  xpos 706
+  ypos -578
+ }
+ ApplyMaterial {
+  inputs 2
+  name ApplyMaterial2
+  xpos 706
+  ypos -319
+ }
+set N4f34840 [stack 0]
+ Scene {
+  inputs 2
+  name Scene2
+  xpos 1649
+  ypos -438
+ }
+push 0
+ ScanlineRender {
+  inputs 3
+  transparency false
+  samples 2
+  name ScanlineRender1
+  xpos 1639
+  ypos -43
+ }
+ set C5174b90 [stack 0]
+push $N4efd348
+ Camera2 {
+  inputs 0
+  display off
+  translate {{parent.input2.translate x1 -19.24542809 x15 10} {parent.input2.translate x1 13.83887196} {parent.input2.translate x1 44.90986252}}
+  rotate {{parent.input2.rotate} {parent.input2.rotate} {parent.input2.rotate}}
+  skew {{parent.input2.skew} {parent.input2.skew} {parent.input2.skew}}
+  pivot {{parent.input2.pivot} {parent.input2.pivot} {parent.input2.pivot}}
+  focal 11
+  haperture 10
+  vaperture 8
+  name ProjectionCam
+  xpos 948
+  ypos -167
+ }
+set N354ebc0 [stack 0]
+ Dot {
+  name Dot3
+  xpos 972
+  ypos -378
+ }
+ Dot {
+  name Dot4
+  xpos 1400
+  ypos -378
+ }
+push $N354ebc0
+push $N4ef0ac8
+push $N4f34840
+ Scene {
+  inputs 2
+  name Scene5
+  xpos 804
+  ypos -165
+ }
+push 0
+clone $C5174b90 {
+  inputs 3
+  xpos 794
+  ypos -18
+  selected false
+ }
+set N4fe65e0 [stack 0]
+ Dot {
+  name Dot2
+  xpos 1070
+  ypos 2
+ }
+ Dot {
+  name Dot1
+  xpos 1070
+  ypos -317
+ }
+ Project3D {
+  inputs 2
+  name Project3D1
+  xpos 1366
+  ypos -321
+ }
+ Card2 {
+  rotate {-90 0 0}
+  uniform_scale 100
+  control_points {3 3 3 6 
+
+1 {-0.5 -0.5 0} 0 {0.166667 0 0} 0 {0 0 0} 0 {0 0.166667 0} 0 {0 0 0} 0 {0 0 0} 
+1 {0 -0.5 0} 0 {0.166667 0 0} 0 {-0.166667 0 0} 0 {0 0.166667 0} 0 {0 0 0} 0 {0.5 0 0} 
+1 {0.5 -0.5 0} 0 {0 0 0} 0 {-0.166667 0 0} 0 {0 0.166667 0} 0 {0 0 0} 0 {1 0 0} 
+1 {-0.5 0 0} 0 {0.166667 0 0} 0 {0 0 0} 0 {0 0.166667 0} 0 {0 -0.166667 0} 0 {0 0.5 0} 
+1 {0 0 0} 0 {0.166667 0 0} 0 {-0.166667 0 0} 0 {0 0.166667 0} 0 {0 -0.166667 0} 0 {0.5 0.5 0} 
+1 {0.5 0 0} 0 {0 0 0} 0 {-0.166667 0 0} 0 {0 0.166667 0} 0 {0 -0.166667 0} 0 {1 0.5 0} 
+1 {-0.5 0.5 0} 0 {0.166667 0 0} 0 {0 0 0} 0 {0 0 0} 0 {0 -0.166667 0} 0 {0 1 0} 
+1 {0 0.5 0} 0 {0.166667 0 0} 0 {-0.166667 0 0} 0 {0 0 0} 0 {0 -0.166667 0} 0 {0.5 1 0} 
+1 {0.5 0.5 0} 0 {0 0 0} 0 {-0.166667 0 0} 0 {0 0 0} 0 {0 -0.166667 0} 0 {1 1 0} }
+  name ShadowReceivingObject
+  xpos 1366
+  ypos -266
+ }
+push 0
+push 0
+ Scene {
+  inputs 3
+  name Scene1
+  xpos 1249
+  ypos -184
+ }
+push 0
+clone $C5174b90 {
+  inputs 3
+  xpos 1373
+  ypos -35
+  selected false
+ }
+set N5179200 [stack 0]
+push $N5179200
+ Copy {
+  inputs 2
+  from0 rgba.red
+  to0 rgba.alpha
+  name Copy2
+  xpos 1373
+  ypos 118
+ }
+ Invert {
+  name Invert1
+  xpos 1373
+  ypos 159
+ }
+ ChannelMerge {
+  inputs 2
+  A rgba.red
+  operation max
+  B rgba.red
+  output rgba.red
+  name ChannelMerge1
+  xpos 1373
+  ypos 264
+ }
+ Shuffle {
+  green red
+  blue red
+  alpha red
+  name Shuffle1
+  xpos 1373
+  ypos 319
+ }
+ Output {
+  name ShadowMatte
+  xpos 1083
+  ypos 325
+ }
+ Dot {
+  inputs 0
+  name Dot6
+  xpos 1184
+  ypos 124
+ }
+ Input {
+  inputs 0
+  name Light
+  xpos 991
+  ypos -576
+  number 2
+ }
+push $N4fe65e0
+ Viewer {
+  name Viewer1
+  xpos 794
+  ypos 25
+ }
+end_group

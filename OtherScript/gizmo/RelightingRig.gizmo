@@ -1,0 +1,292 @@
+#! C:/Program Files/Nuke6.0v1/Nuke6.0.exe -nx
+version 6.0 v1
+Gizmo {
+ inputs 2
+ addUserKnob {20 "" l IrradRigTop}
+ addUserKnob {26 Light l MainLight}
+ addUserKnob {6 top_on l "Enable Light" -STARTLINE}
+ top_on true
+ addUserKnob {7 scaleT l "Overall Brightness" R 0 10}
+ scaleT 1
+ addUserKnob {26 ""}
+ addUserKnob {7 ambT l "Ambient Ratio" R -1 5}
+ addUserKnob {7 tboT l "Top/Bottom Ratio" R -5 5}
+ addUserKnob {7 lriT l "Left/Right Ratio" R -5 5}
+ addUserKnob {26 ""}
+ addUserKnob {7 top_spread l Spread}
+ top_spread 0.5
+ addUserKnob {18 top_gamma l Gamma R 0 5}
+ top_gamma {1 1 1}
+ addUserKnob {18 top_gain l Gain R 0 5}
+ top_gain {1 1 1}
+ addUserKnob {26 ""}
+ addUserKnob {6 top_shad l "Enable Shade" -STARTLINE}
+ addUserKnob {19 top_shad_cc l "Top Shade CC"}
+ top_shad_cc 100
+ addUserKnob {7 top_shad_opac l "Top Shade Opacity"}
+ top_shad_opac 1
+ addUserKnob {26 ""}
+ addUserKnob {30 rot_top l "Rotation X/Z"}
+ addUserKnob {26 ""}
+}
+ BackdropNode {
+  inputs 0
+  name TOP_LIGHT_CENTERING
+  tile_color 0x61806000
+  xpos -531
+  ypos 301
+  bdwidth 182
+  bdheight 118
+ }
+ BackdropNode {
+  inputs 0
+  name TOP_LIGHT_ROTATION
+  tile_color 0x64807300
+  xpos -568
+  ypos 146
+  bdwidth 257
+  bdheight 140
+ }
+ BackdropNode {
+  inputs 0
+  name TOP_SHADOW
+  tile_color 0x6a808000
+  xpos -870
+  ypos 263
+  bdwidth 200
+  bdheight 385
+ }
+ Input {
+  inputs 0
+  name A
+  xpos -480
+  ypos -250
+  number 1
+ }
+ Clamp {
+  channels alpha
+  name CLAMP_ALPHA
+  tile_color 0x7aa9ff00
+  xpos -480
+  ypos -40
+ }
+ Input {
+  inputs 0
+  name N
+  xpos -590
+  ypos -250
+ }
+ Dot {
+  name Dot1
+  xpos -556
+  ypos -6
+ }
+add_layer {o_Nobj o_Nobj.red o_Nobj.green o_Nobj.blue}
+ ShuffleCopy {
+  inputs 2
+  in alpha
+  in2 o_Nobj
+  name ShuffleCopy1
+  xpos -480
+  ypos -10
+ }
+ Expression {
+  temp_name0 input
+  temp_expr0 parent.rot_top.v
+  temp_name1 sigma
+  temp_expr1 radians(input)
+  expr0 "cos(sigma)*r + sin(sigma)*g"
+  expr1 "-sin(sigma)*r + cos(sigma)*g"
+  name ROT_Z1
+  xpos -480
+  ypos 182
+ }
+ Expression {
+  temp_name0 input2
+  temp_expr0 parent.rot_top.u
+  temp_name1 theta
+  temp_expr1 radians(input2)
+  expr1 "cos(theta)*g + sin(theta)*b"
+  expr2 "-sin(theta)*g + cos(theta)*b"
+  name ROT_X1
+  xpos -480
+  ypos 208
+ }
+ Expression {
+  temp_name0 input
+  temp_expr0 34
+  temp_name1 sigma
+  temp_expr1 radians(input)
+  expr0 "cos(sigma)*r + sin(sigma)*g"
+  expr1 "-sin(sigma)*r + cos(sigma)*g"
+  name ROT_Z
+  xpos -480
+  ypos 326
+ }
+ Expression {
+  temp_name0 input2
+  temp_expr0 -22
+  temp_name1 theta
+  temp_expr1 radians(input2)
+  expr1 "cos(theta)*g + sin(theta)*b"
+  expr2 "-sin(theta)*g + cos(theta)*b"
+  name ROT_X
+  xpos -480
+  ypos 350
+ }
+ Expression {
+  temp_name0 input3
+  temp_expr0 33
+  temp_name1 epsilon
+  temp_expr1 radians(input3)
+  expr0 "cos(epsilon)*r - sin(epsilon)*b"
+  expr2 "sin(epsilon)*r + cos(epsilon)*b"
+  name ROT_Y
+  xpos -480
+  ypos 374
+ }
+set N112f8d00 [stack 0]
+ Expression {
+  temp_name0 scaleT
+  temp_expr0 parent.top_shad_opac
+  temp_name1 ambT
+  temp_expr1 1
+  temp_name2 tboT
+  temp_expr2 1
+  temp_name3 lriT
+  temp_expr3 1
+  expr0 0.429043*scaleT*0.077106*(pow2(r)-pow2(g))+(0.743125*scaleT*0.07674*pow2(b))+0.886227*scaleT*ambT*3.34088-(0.247708*scaleT*0.07674)+2*0.429043*((scaleT*-0.190799*r*g)+(scaleT*-0.093763*r*b)+(scaleT*-0.127488*g*b))+2*0.511664*((scaleT*lriT*-0.149453*r)+(scaleT*tboT*-0.185939*g)+(scaleT*-0.093958*b))
+  expr1 0.429043*scaleT*0.077106*(pow2(r)-pow2(g))+(0.743125*scaleT*0.07674*pow2(b))+0.886227*scaleT*ambT*3.34088-(0.247708*scaleT*0.07674)+2*0.429043*((scaleT*-0.190799*r*g)+(scaleT*-0.093763*r*b)+(scaleT*-0.127488*g*b))+2*0.511664*((scaleT*lriT*-0.149453*r)+(scaleT*tboT*-0.185939*g)+(scaleT*-0.093958*b))
+  expr2 0.429043*scaleT*0.077106*(pow2(r)-pow2(g))+(0.743125*scaleT*0.07674*pow2(b))+0.886227*scaleT*ambT*3.34088-(0.247708*scaleT*0.07674)+2*0.429043*((scaleT*-0.190799*r*g)+(scaleT*-0.093763*r*b)+(scaleT*-0.127488*g*b))+2*0.511664*((scaleT*lriT*-0.149453*r)+(scaleT*tboT*-0.185939*g)+(scaleT*-0.093958*b))
+  expr3 a
+  name Irrad_RENDER_TopShad
+  tile_color 0xc6595900
+  label TOP_SHADE
+  note_font "Helvetica bold Bold Bold Bold Bold Bold Bold Bold Bold"
+  note_font_size 24
+  xpos -810
+  ypos 354
+  addUserKnob {20 "" l Irradiance}
+ }
+ CCorrect {
+  gain {{1/(parent.top_shad_cc.r+0.00001)} {1/(parent.top_shad_cc.g+0.00001)} {1/(parent.top_shad_cc.b+0.00001)} 1}
+  mix {{parent.top_shad_cc.a}}
+  name CCorrect6
+  tile_color 0x7aa9ff00
+  xpos -810
+  ypos 422
+ }
+ Premult {
+  name Premult4
+  xpos -810
+  ypos 446
+ }
+ Dot {
+  name Dot5
+  xpos -776
+  ypos 618
+ }
+push $N112f8d00
+ Expression {
+  temp_name0 scaleT
+  temp_expr0 parent.scaleT
+  temp_name1 ambT
+  temp_expr1 parent.ambT
+  temp_name2 tboT
+  temp_expr2 parent.tboT
+  temp_name3 lriT
+  temp_expr3 parent.lriT
+  expr0 "0.429043*scaleT*-0.115481*(pow2(r)-pow2(g))+(0.743125*scaleT*-0.120835 *pow2(b))+0.886227*scaleT*ambT*0.204266-(0.247708*scaleT*-0.120835 )+2*0.429043*((scaleT*0.286652 *r*g)+(scaleT*0.144743*r*b)+(scaleT*0.207198*g*b))+2*0.511664*((scaleT*lriT*0.178752*r)+(scaleT*tboT*0.262809*g)+(scaleT*0.129309*b))"
+  expr1 "0.429043*scaleT*-0.115481*(pow2(r)-pow2(g))+(0.743125*scaleT*-0.120835 *pow2(b))+0.886227*scaleT*ambT*0.204266-(0.247708*scaleT*-0.120835 )+2*0.429043*((scaleT*0.286652 *r*g)+(scaleT*0.144743*r*b)+(scaleT*0.207198*g*b))+2*0.511664*((scaleT*lriT*0.178752*r)+(scaleT*tboT*0.262809*g)+(scaleT*0.129309*b))"
+  expr2 "0.429043*scaleT*-0.115481*(pow2(r)-pow2(g))+(0.743125*scaleT*-0.120835 *pow2(b))+0.886227*scaleT*ambT*0.204266-(0.247708*scaleT*-0.120835 )+2*0.429043*((scaleT*0.286652 *r*g)+(scaleT*0.144743*r*b)+(scaleT*0.207198*g*b))+2*0.511664*((scaleT*lriT*0.178752*r)+(scaleT*tboT*0.262809*g)+(scaleT*0.129309*b))"
+  expr3 a
+  name Irrad_RENDER_TopLight
+  tile_color 0xc6595900
+  xpos -480
+  ypos 468
+  addUserKnob {20 "" l Irradiance}
+ }
+ Group {
+  name PerlinSpread3
+  help "This is an implementation of Ken Perlin's gain function. It boosts micro-contrast (acutance, in photographic terms) without clipping. When set to 0.5, it has no effect. When >0.5, gain is boosted; when <.5, gain is muted. Only luminance is affected; not hue nor saturation. Superwhites remain untouched."
+  tile_color 0xcc9d6d00
+  xpos -480
+  ypos 494
+  addUserKnob {20 "" l User}
+  addUserKnob {7 realGain l "Inverse Perlin Gain function" t "This is an implementation of Ken Perlin's gain function. It boosts micro-contrast (acutance, in photographic terms) without clipping. When set to 0.5, it has no effect. When >0.5, gain is boosted; when <.5, gain is muted. Only luminance is affected; not hue nor saturation. Superwhites remain untouched."}
+  realGain {{parent.top_spread i}}
+ }
+  Input {
+   inputs 0
+   name Input1
+   xpos 191
+   ypos -85
+  }
+  Expression {
+   temp_name0 gain
+   temp_expr0 "1 - parent.realGain"
+   temp_name1 lum
+   temp_expr1 "0.2125*Br + 0.7154*Bg + 0.0721*Bb"
+   temp_name2 val
+   temp_expr2 .5*((lum<.5)?((1-gain)>0?pow(2*lum,log(1-gain)/log(0.5)):0):2-((1-gain)>0?pow(2-2*lum,log(1-gain)/log(0.5)):0))
+   temp_name3 inv
+   expr0 r>1?r:r*(val/(lum+0.00001))
+   expr1 g>1?g:g*(val/(lum+0.00001))
+   expr2 b>1?b:b*(val/(lum+0.00001))
+   name KPGain
+   tile_color 0xd47f3b00
+   label "TRUE GAIN\nFUNCTION"
+   selected true
+   xpos 121
+   ypos -19
+   addUserKnob {20 "" l User}
+  }
+  Output {
+   name Output1
+   xpos 191
+   ypos 137
+  }
+ end_group
+ CCorrect {
+  gamma {{parent.top_gamma.r i} {parent.top_gamma.g i} {parent.top_gamma.b i} 1}
+  gain {{parent.top_gain.r i} {parent.top_gain.g i} {parent.top_gain.b i} 1}
+  name CCorrect5
+  tile_color 0x7aa9ff00
+  xpos -480
+  ypos 518
+ }
+ Premult {
+  name Premult6
+  xpos -480
+  ypos 542
+ }
+ Merge {
+  inputs 2
+  A {rgba.red rgba.green rgba.blue -rgba.alpha}
+  operation from
+  name Merge5
+  tile_color 0x4b5ec600
+  xpos -480
+  ypos 614
+  disable {{parent.top_shad.0==0}}
+ }
+ Clamp {
+  channels rgba
+  maximum_enable false
+  name CLAMP_BLACKS1
+  tile_color 0x7aa9ff00
+  xpos -480
+  ypos 662
+ }
+ Switch {
+  which {{parent.top_on.0==0}}
+  name Switch1
+  xpos -480
+  ypos 688
+ }
+ Output {
+  name Output1
+  xpos -480
+  ypos 871
+ }
+end_group

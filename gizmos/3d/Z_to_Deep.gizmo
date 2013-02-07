@@ -1,0 +1,68 @@
+#! C:/Program Files/Nuke6.3v1b34/Nuke6.3.exe -nx
+version 6.3 v1b34
+Gizmo {
+ inputs 2
+ tile_color 0x561e15ff
+ note_font Verdana
+ mapsize {0.15 0.15}
+ addUserKnob {20 settings}
+ addUserKnob {41 premult l "premult input" -STARTLINE T DeepFromImage1.premult}
+ addUserKnob {41 set_z l "specify z" -STARTLINE T DeepFromImage1.set_z}
+ addUserKnob {41 z T DeepFromImage1.z}
+ addUserKnob {20 alpha n 1}
+ alpha 0
+ addUserKnob {6 add l "add alpha" +STARTLINE}
+ addUserKnob {41 format -STARTLINE T Constant1.format}
+ addUserKnob {41 color T Constant1.color}
+ addUserKnob {20 endGroup n -1}
+}
+ Constant {
+  inputs 0
+  channels alpha
+  color 1
+  name Constant1
+  xpos -237
+  ypos -171
+  postage_stamp false
+ }
+ Input {
+  inputs 0
+  name depth
+  xpos -4
+  ypos -219
+  number 1
+ }
+ Input {
+  inputs 0
+  name color
+  xpos -118
+  ypos -271
+ }
+ Copy {
+  inputs 2
+  from0 rgba.red
+  to0 depth.Z
+  name Copy1
+  xpos -118
+  ypos -225
+ }
+ Copy {
+  inputs 2
+  from0 rgba.alpha
+  to0 rgba.alpha
+  name Copy2
+  xpos -118
+  ypos -171
+  disable {{parent.add+-1 i}}
+ }
+ DeepFromImage {
+  name DeepFromImage1
+  xpos -118
+  ypos -125
+ }
+ Output {
+  name Output1
+  xpos -118
+  ypos -71
+ }
+end_group

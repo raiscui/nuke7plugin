@@ -1,0 +1,920 @@
+#! C:/Program Files/Nuke6.0v3/Nuke6.0.exe -nx
+version 6.0 v3
+Gizmo {
+ inputs 6
+ help "2.5DLight v1.1\nInput a Normal and PositionXYZ pass to relight the scene.\n\nNormal Channel Ordering\nCamera:\nX (R)\nY (G) up\nZ (B)\n\nPosition Channel Ordering\nCamera:\nX (R)\nY (G) up\nZ (B)\n\nGavin Greenwalt\nStraightface Studios"
+ tile_color 0xffff0000
+ addUserKnob {20 LightParameters l "Light Parameters"}
+ addUserKnob {12 light_xypos l "Light Position"}
+ light_xypos {640 480}
+ addUserKnob {7 xyscale l "   XY Scale" -STARTLINE R 0.01 10}
+ xyscale 1
+ addUserKnob {7 light_posz l z R -250 2000}
+ light_posz 200
+ addUserKnob {20 transformsettingsgroup l "Transform Settings:" n 1}
+ addUserKnob {4 transformspace l "Transform Space" M {Camera World}}
+ addUserKnob {7 camfov l "Camera FOV (Camera)" R 0 180}
+ camfov 46
+ addUserKnob {6 usefov l "Use FOV" -STARTLINE}
+ usefov true
+ addUserKnob {13 campos l "Camera Position (World)"}
+ addUserKnob {20 endGroup_2 l endGroup n -1}
+ addUserKnob {20 dataGroup l "Footage Settings:" n 1}
+ addUserKnob {6 centerN l "Normal is 0-1?" +STARTLINE}
+ addUserKnob {6 centerP l "Position is 0-1?" -STARTLINE}
+ addUserKnob {6 invertZn l "Invert Camera Normal.Z" -STARTLINE}
+ addUserKnob {6 unpremult l "Footage is Premultiplied?" +STARTLINE}
+ unpremult true
+ addUserKnob {20 endGroup_3 l endGroup n -1}
+ addUserKnob {26 ""}
+ addUserKnob {18 gain_cc l "Light Color" R 0 5}
+ gain_cc 1
+ addUserKnob {7 light_intensity l "Light Intensity" R 0 10}
+ light_intensity 1
+ addUserKnob {6 light_falloff l Falloff -STARTLINE}
+ light_falloff true
+ addUserKnob {18 ambientcolor l "Ambient Light"}
+ ambientcolor 0.25
+ addUserKnob {18 gamma_cc l "Diffuse Gamma" R 0 5}
+ gamma_cc 1
+ addUserKnob {26 ""}
+ addUserKnob {20 matgroup l "Shader Properties" n 1}
+ addUserKnob {18 diffusecolor l "Diffuse Color"}
+ diffusecolor 1
+ addUserKnob {6 diffusemap l "Diffuse Map" +STARTLINE}
+ addUserKnob {7 diffusemaplevel l "" -STARTLINE}
+ diffusemaplevel 1
+ addUserKnob {7 spec_level l "Specular Level"}
+ spec_level 1
+ addUserKnob {6 fresnelspec l "Fresnel (Camera Space Only)" -STARTLINE}
+ addUserKnob {6 specmap l "Specular Map" +STARTLINE}
+ addUserKnob {7 specmaplevel l "" -STARTLINE}
+ specmaplevel 1
+ addUserKnob {7 spec_gloss l "Specular Glossiness" R 0 200}
+ spec_gloss 85
+ addUserKnob {6 glossmap l "Glossiness Map" +STARTLINE}
+ addUserKnob {7 glossmaplevel l "" -STARTLINE}
+ glossmaplevel 1
+ addUserKnob {20 endGroup n -1}
+ addUserKnob {20 extrachannelgroup l "Extra Channels:" n 1}
+ addUserKnob {6 diffusechannel l Diffuse +STARTLINE}
+ addUserKnob {6 specularchannel l Specular -STARTLINE}
+ addUserKnob {6 sqrtfalloffchannel l "Light Falloff^2" -STARTLINE}
+ sqrtfalloffchannel true
+ addUserKnob {6 linfalloffchannel l "Light Falloff^1" -STARTLINE}
+ linfalloffchannel true
+ addUserKnob {20 endGroup_1 l endGroup n -1}
+}
+ BackdropNode {
+  inputs 0
+  name DiffuseBackdrop
+  xpos -147
+  ypos -209
+  bdwidth 540
+  bdheight 419
+ }
+ BackdropNode {
+  inputs 0
+  name SpecularBackdrop
+  xpos -995
+  ypos -367
+  bdwidth 612
+  bdheight 657
+ }
+ Input {
+  inputs 0
+  name ALPHA
+  xpos -218
+  ypos -849
+ }
+set N14e9ce20 [stack 0]
+ Dot {
+  name Dot16
+  xpos -954
+  ypos -441
+ }
+set N14e9cbb0 [stack 0]
+ Input {
+  inputs 0
+  name GLOSS
+  xpos -799
+  ypos -341
+  number 4
+ }
+ Copy {
+  inputs 2
+  from0 rgba.alpha
+  to0 rgba.alpha
+  name Copy8
+  xpos -799
+  ypos -277
+ }
+ Unpremult {
+  name Unpremult4
+  xpos -799
+  ypos -238
+  disable {{abs(parent.unpremult-1) i}}
+ }
+ Multiply {
+  value 250
+  name Multiply6
+  xpos -798
+  ypos -211
+ }
+ Constant {
+  inputs 0
+  channels rgb
+  color {{parent.spec_gloss i}}
+  format "1 1 0 0 1 1 1 pixel"
+  name GlossinessConstant
+  xpos -908
+  ypos -133
+ }
+ Merge2 {
+  inputs 2
+  output {rgba.red rgba.green rgba.blue -rgba.alpha}
+  mix {{parent.glossmaplevel i}}
+  name Merge2
+  xpos -798
+  ypos -110
+  disable {{"abs(parent.glossmap -1)" i}}
+ }
+ Dot {
+  name Dot20
+  xpos -764
+  ypos 69
+ }
+push $N14e9ce20
+ Dot {
+  name Dot21
+  xpos -184
+  ypos -670
+ }
+set N14e9b830 [stack 0]
+ Input {
+  inputs 0
+  name N
+  xpos -136
+  ypos -690
+  number 1
+ }
+ Copy {
+  inputs 2
+  from0 rgba.alpha
+  to0 rgba.alpha
+  name Copy7
+  xpos -136
+  ypos -623
+ }
+ Unpremult {
+  name Unpremult1
+  xpos -136
+  ypos -584
+  disable {{abs(parent.unpremult-1) i}}
+ }
+set N14e9b0e0 [stack 0]
+ Dot {
+  name Dot15
+  xpos 11
+  ypos -580
+ }
+ Dot {
+  name Dot24
+  xpos 11
+  ypos -469
+ }
+push $N14e9b0e0
+ Add {
+  value -0.5
+  name Add3
+  xpos -136
+  ypos -551
+ }
+ Multiply {
+  value 2
+  name Multiply9
+  xpos -136
+  ypos -512
+ }
+ Switch {
+  inputs 2
+  which {{abs(parent.centerN-1) i}}
+  name Switch1
+  xpos -136
+  ypos -473
+ }
+ Multiply {
+  value {1 1 -1 1}
+  name InvertZNormal
+  xpos -136
+  ypos -422
+  disable {{parent.transformspace i x1 1}}
+ }
+ Expression {
+  temp_name0 len
+  temp_expr0 sqrt(pow2(Bg)+pow2(Br)+pow2(Bb))
+  expr0 Br/(len+0.00001)
+  expr1 Bg/(len+0.00001)
+  expr2 Bb/(len+0.00001)
+  expr3 Ba
+  name NormalizeNormalVector
+  xpos -136
+  ypos -383
+ }
+set N14e9a240 [stack 0]
+ Dot {
+  name Dot2
+  xpos -571
+  ypos -379
+ }
+ Dot {
+  name Dot22
+  xpos -571
+  ypos -64
+ }
+set N14e99d60 [stack 0]
+push $N14e9b830
+ Input {
+  inputs 0
+  name P
+  xpos -300
+  ypos -679
+  number 2
+ }
+set N14e99af0 [stack 0]
+ Copy {
+  inputs 2
+  from0 rgba.alpha
+  to0 rgba.alpha
+  name Copy1
+  xpos -300
+  ypos -620
+ }
+ Unpremult {
+  name Unpremult2
+  xpos -300
+  ypos -581
+  disable {{abs(parent.unpremult-1) i}}
+ }
+set N14e99610 [stack 0]
+ Dot {
+  name Dot19
+  xpos -395
+  ypos -577
+ }
+ Dot {
+  name Dot18
+  xpos -395
+  ypos -437
+ }
+push $N14e99610
+ Add {
+  channels {rgba.red rgba.green -rgba.blue}
+  value -0.5
+  unpremult -rgba.alpha
+  name Add2
+  xpos -300
+  ypos -554
+ }
+ Add {
+  channels {-rgba.red -rgba.green rgba.blue}
+  value -0.5
+  unpremult -rgba.alpha
+  name Add1
+  xpos -300
+  ypos -515
+  disable {{abs(parent.transformspace-1) i}}
+ }
+ Multiply {
+  channels rgb
+  value 100
+  unpremult -rgba.alpha
+  name Multiply2
+  selected true
+  xpos -300
+  ypos -473
+ }
+ Switch {
+  inputs 2
+  which {{abs(parent.centerP-1) i}}
+  name Switch2
+  xpos -300
+  ypos -441
+ }
+ Dot {
+  name Dot5
+  xpos -266
+  ypos -414
+ }
+set N14e9d090 [stack 0]
+ Expression {
+  temp_name0 Lu
+  temp_expr0 parent.xyscale
+  temp_name1 Lx
+  temp_expr1 parent.light_xypos.x
+  temp_name2 Ly
+  temp_expr2 parent.light_xypos.y
+  temp_name3 Lz
+  temp_expr3 parent.light_posz
+  expr0 Lu*Lx-r
+  expr1 Lu*Ly-g
+  expr2 "Lz -b "
+  channel3 alpha
+  name LightVector1
+  xpos -250
+  ypos -366
+ }
+push $N14e9d090
+ Expression {
+  temp_name0 Lu
+  temp_expr0 tan((3.14159265/180)*(parent.camfov*0.5))*(parent.light_posz)*parent.xyscale
+  temp_name1 Lx
+  temp_expr1 "((parent.light_xypos.x - (input.width/2))/(input.width/2))"
+  temp_name2 Ly
+  temp_expr2 "((parent.light_xypos.y - (input.height/2))/(input.width/2))"
+  temp_name3 Lz
+  temp_expr3 parent.light_posz
+  expr0 Lu*Lx-r
+  expr1 Lu*Ly-g
+  expr2 "Lz -b "
+  channel3 alpha
+  name LightVector
+  xpos -351
+  ypos -367
+ }
+ Switch {
+  inputs 2
+  which {{parent.transformspace i}}
+  name Switch4
+  xpos -300
+  ypos -334
+ }
+ Dot {
+  name Dot4
+  xpos -266
+  ypos -307
+ }
+set N14e9d7e0 [stack 0]
+ Expression {
+  temp_name0 len
+  temp_expr0 sqrt(pow2(Bg)+pow2(Br)+pow2(Bb))
+  expr0 Br/(len+0.00001)
+  expr1 Bg/(len+0.00001)
+  expr2 Bb/(len+0.00001)
+  expr3 Ba
+  name NormalizeLightVector
+  xpos -300
+  ypos -275
+ }
+ Dot {
+  name Dot1
+  xpos -266
+  ypos -232
+ }
+set N14e9dcc0 [stack 0]
+push $N14e9d090
+ Dot {
+  name Dot25
+  xpos -628
+  ypos -414
+ }
+ Expression {
+  temp_name0 Vx
+  temp_expr0 parent.campos.x
+  temp_name1 Vy
+  temp_expr1 parent.campos.y
+  temp_name2 Vz
+  temp_expr2 parent.campos.z
+  expr0 Vx-r
+  expr1 Vy-g
+  expr2 "Vz -b "
+  channel3 alpha
+  name ViewVector1
+  xpos -662
+  ypos -185
+ }
+ Expression {
+  temp_name0 len
+  temp_expr0 sqrt(pow2(Bg)+pow2(Br)+pow2(Bb))
+  expr0 Br/(len+0.00001)
+  expr1 Bg/(len+0.00001)
+  expr2 Bb/(len+0.00001)
+  expr3 Ba
+  name NormalizeViewVector2
+  xpos -662
+  ypos -158
+ }
+set N158d0fa0 [stack 0]
+ MergeExpression {
+  inputs 2
+  expr0 (Ar+Br)/2
+  expr1 (Ag+Bg)/2
+  expr2 (Ab+Bb)/2
+  channel3 {none none none -rgba.alpha}
+  name HalfVector
+  xpos -711
+  ypos -56
+ }
+ Expression {
+  temp_name0 len
+  temp_expr0 sqrt(pow2(Bg)+pow2(Br)+pow2(Bb))
+  expr0 Br/(len+0.00001)
+  expr1 Bg/(len+0.00001)
+  expr2 Bb/(len+0.00001)
+  expr3 Ba
+  name NormalizeLightVector1
+  xpos -711
+  ypos -29
+ }
+ MergeExpression {
+  inputs 2
+  temp_name0 dProduct
+  temp_expr0 Ar*Br+Ag*Bg+Ab*Bb
+  temp_name1 gloss
+  temp_expr1 (parent.spec_gloss)*((parent.spec_gloss)/60)+5
+  expr0 dProduct
+  channel1 none
+  expr1 pow((dProduct),gloss)
+  channel2 none
+  expr2 pow((dProduct),gloss)
+  channel3 {none none none -rgba.alpha}
+  name Blinn_Shading1
+  xpos -711
+  ypos 18
+ }
+ MergeExpression {
+  inputs 2
+  temp_name0 dProduct
+  temp_expr0 B.r
+  temp_name2 gloss
+  temp_expr2 (A.r)*((A.r)/60)+5
+  expr0 pow((dProduct),gloss)
+  name Blinn_Glossiness
+  xpos -711
+  ypos 65
+ }
+ Shuffle {
+  green red
+  blue red
+  name Shuffle4
+  xpos -711
+  ypos 102
+ }
+set N158d1bd0 [stack 0]
+ Dot {
+  name Dot12
+  xpos -767
+  ypos 106
+ }
+ Dot {
+  name Dot11
+  xpos -767
+  ypos 572
+ }
+push $N14e9cbb0
+ Dot {
+  name Dot23
+  xpos -954
+  ypos 210
+ }
+ Input {
+  inputs 0
+  name SPEC
+  xpos -891
+  ypos 163
+  number 5
+ }
+ Copy {
+  inputs 2
+  from0 rgba.alpha
+  to0 rgba.alpha
+  name Copy9
+  xpos -891
+  ypos 209
+ }
+ Unpremult {
+  name Unpremult5
+  xpos -891
+  ypos 248
+  disable {{abs(parent.unpremult-1)}}
+ }
+push $N158d0fa0
+push $N14e99d60
+ MergeExpression {
+  inputs 2
+  temp_name0 dProduct
+  temp_expr0 Ar*Br+Ag*Bg+Ab*Bb
+  expr0 dProduct
+  channel1 none
+  channel2 none
+  channel3 {none none none -rgba.alpha}
+  name Z_Shading
+  xpos -605
+  ypos -5
+ }
+ Shuffle {
+  green red
+  blue red
+  alpha black
+  name Shuffle7
+  xpos -605
+  ypos 22
+ }
+ Invert {
+  name Invert1
+  xpos -605
+  ypos 49
+ }
+ Dot {
+  name Dot14
+  xpos -571
+  ypos 205
+ }
+push $N14e9d7e0
+ Expression {
+  temp_name0 len
+  temp_expr0 sqrt(pow2(Bg)+pow2(Br)+pow2(Bb))
+  temp_name1 scaler
+  temp_expr1 20
+  expr0 (1/pow2(len))*scaler
+  channel1 {-rgba.red -rgba.green -rgba.blue}
+  expr1 (1/pow2(len))*scaler
+  channel2 {-rgba.red -rgba.green -rgba.blue}
+  expr2 (1/pow2(len))*scaler
+  expr3 Ba
+  name Light_Falloff_Calc
+  xpos -396
+  ypos -275
+ }
+set N158d36a0 [stack 0]
+ Dot {
+  name Dot3
+  xpos -362
+  ypos -139
+ }
+set N158d3910 [stack 0]
+ Shuffle {
+  green red
+  blue red
+  name Shuffle3
+  xpos -487
+  ypos -48
+ }
+set N158d3b80 [stack 0]
+push $N158d1bd0
+ CCorrect {
+  gamma {1 1 1 1}
+  gain {{gain_cc.r i} {gain_cc.g i} {gain_cc.b i} 1}
+  name CCorrect2
+  tile_color 0x7aa9ff00
+  xpos -711
+  ypos 129
+ }
+ Merge2 {
+  inputs 2
+  operation multiply
+  output {rgba.red rgba.green rgba.blue -rgba.alpha}
+  name Light_Falloff_Mult1
+  xpos -487
+  ypos 129
+  disable {{abs(parent.light_falloff-1) i}}
+ }
+ Multiply {
+  channels rgb
+  value {{parent.light_intensity i}}
+  name Multiply4
+  xpos -486
+  ypos 156
+ }
+ Merge2 {
+  inputs 2
+  operation multiply
+  mix 0.75
+  name Multiply5
+  xpos -486
+  ypos 201
+  disable {{abs(parent.fresnelspec-1) i}}
+ }
+ Merge2 {
+  inputs 2
+  operation multiply
+  output {rgba.red rgba.green rgba.blue -rgba.alpha}
+  mix {{parent.specmaplevel i}}
+  name Multiply7
+  xpos -486
+  ypos 248
+  disable {{abs(specmap-1) i}}
+ }
+set N158d47b0 [stack 0]
+ Dot {
+  name Dot10
+  xpos -452
+  ypos 507
+ }
+push $N158d3910
+ Dot {
+  name Dot9
+  xpos -362
+  ypos 437
+ }
+push $N14e9d7e0
+ Expression {
+  temp_name0 len
+  temp_expr0 sqrt(pow2(Bg)+pow2(Br)+pow2(Bb))
+  temp_name1 scaler
+  temp_expr1 20
+  expr0 (1/len)
+  channel1 {-rgba.red -rgba.green -rgba.blue}
+  expr1 (1/len)
+  channel2 {-rgba.red -rgba.green -rgba.blue}
+  expr2 (1/len)
+  channel3 {none none none -rgba.alpha}
+  expr3 Ba
+  name Light_Falloff_Calclin
+  xpos -207
+  ypos -274
+ }
+ Dot {
+  name Dot8
+  xpos -173
+  ypos 398
+ }
+push $N158d47b0
+push $N14e9ce20
+ Dot {
+  name Dot7
+  xpos 160
+  ypos -553
+ }
+ Dot {
+  name Dot17
+  xpos 160
+  ypos -84
+ }
+ Input {
+  inputs 0
+  name DIFFUSE
+  xpos 192
+  ypos -151
+  number 3
+ }
+ Copy {
+  inputs 2
+  from0 rgba.alpha
+  to0 rgba.alpha
+  name Copy6
+  xpos 192
+  ypos -94
+ }
+set N158d5b30 [stack 0]
+ Shuffle {
+  in alpha
+  name Shuffle8
+  xpos 298
+  ypos -88
+ }
+ Unpremult {
+  name Unpremult6
+  xpos 298
+  ypos -61
+  disable {{abs(parent.unpremult-1) i}}
+ }
+ Grade {
+  white {{parent.ambientcolor i x1 0.175} {parent.ambientcolor i x1 0.175} {parent.ambientcolor i x1 0.175} {parent.ambientcolor i x1 0.175}}
+  name Grade1
+  xpos 298
+  ypos -34
+ }
+ Dot {
+  name Dot26
+  xpos 332
+  ypos 136
+ }
+ Constant {
+  inputs 0
+  channels {rgba.red rgba.green rgba.blue rgba.alpha}
+  color {{parent.diffusecolor i} {parent.diffusecolor i} {parent.diffusecolor i} {parent.diffusecolor i}}
+  format "1 1 0 0 1 1 1 pixel"
+  name Constant1
+  xpos 28
+  ypos -34
+ }
+set N158d6760 [stack 0]
+push $N158d5b30
+ Unpremult {
+  name Unpremult3
+  xpos 192
+  ypos -55
+  disable {{abs(parent.unpremult-1) i}}
+ }
+ Merge2 {
+  inputs 2
+  bbox A
+  mix {{abs(parent.diffusemaplevel-1) i x1 0.53}}
+  name Merge1
+  xpos 192
+  ypos -11
+ }
+ Dot {
+  name Dot13
+  xpos 226
+  ypos 91
+ }
+push $N158d6760
+ Switch {
+  inputs 2
+  which {{parent.diffusemap i}}
+  name Switch3
+  xpos 28
+  ypos 87
+ }
+set N158b6ac0 [stack 0]
+ Merge2 {
+  inputs 2
+  operation multiply
+  output {rgba.red rgba.green rgba.blue -rgba.alpha}
+  name Merge3
+  xpos 28
+  ypos 132
+ }
+push $N158b6ac0
+push $N158d3b80
+push $N14e9a240
+push $N14e9dcc0
+ MergeExpression {
+  inputs 2
+  temp_name0 dProduct
+  temp_expr0 Ar*Br+Ag*Bg+Ab*Bb
+  expr0 dProduct
+  channel1 none
+  channel2 none
+  channel3 {none none none -rgba.alpha}
+  name Lambert_Shading
+  xpos -136
+  ypos -172
+ }
+ Shuffle {
+  green red
+  blue red
+  name Shuffle5
+  xpos -136
+  ypos -145
+ }
+add_layer {diffuse diffuse.red diffuse.green diffuse.blue diffuse.alpha}
+ Shuffle {
+  alpha red
+  out diffuse
+  name Shuffle6
+  xpos -136
+  ypos -97
+  disable {{abs(parent.diffusechannel-1) i}}
+ }
+ Merge2 {
+  inputs 2
+  operation multiply
+  output {rgba.red rgba.green rgba.blue -rgba.alpha}
+  name Light_Falloff_Mult
+  xpos -136
+  ypos -48
+  disable {{abs(parent.light_falloff-1) i}}
+ }
+ Clamp {
+  maximum_enable false
+  name Clamp1
+  xpos -136
+  ypos -6
+ }
+ CCorrect {
+  gamma {{gamma_cc.r} {gamma_cc.g} {gamma_cc.b} 1}
+  gain {{gain_cc.r} {gain_cc.g} {gain_cc.b} 1}
+  name CCorrect1
+  tile_color 0x7aa9ff00
+  xpos -136
+  ypos 33
+ }
+ Multiply {
+  channels rgb
+  value {{parent.light_intensity i}}
+  name Multiply3
+  xpos -136
+  ypos 60
+ }
+ Merge2 {
+  inputs 2
+  operation multiply
+  Achannels {rgba.red rgba.green rgba.blue -rgba.alpha}
+  Bchannels {rgba.red rgba.green rgba.blue -rgba.alpha}
+  output {rgba.red rgba.green rgba.blue -rgba.alpha}
+  name Multiply
+  xpos -136
+  ypos 87
+ }
+ Merge2 {
+  inputs 2
+  operation plus
+  output {rgba.red rgba.green rgba.blue -rgba.alpha}
+  name Plus1
+  xpos -136
+  ypos 132
+ }
+ Shuffle {
+  out {diffuse.red diffuse.green diffuse.blue -diffuse.alpha}
+  name Shuffle2
+  xpos -136
+  ypos 167
+  disable {{abs(parent.diffusechannel-1) i}}
+ }
+ Merge2 {
+  inputs 2
+  operation plus
+  Achannels rgb
+  output {rgba.red rgba.green rgba.blue -rgba.alpha}
+  mix {{parent.spec_level i}}
+  name Plus
+  xpos -136
+  ypos 248
+ }
+ Premult {
+  name Premult2
+  xpos -136
+  ypos 341
+  disable {{abs(parent.unpremult-1) i}}
+ }
+add_layer {atten atten.sqrt atten.lin}
+ Copy {
+  inputs 2
+  from0 rgba.red
+  to0 atten.lin
+  name Copy2
+  xpos -136
+  ypos 388
+  disable {{abs(parent.linfalloffchannel-1) i}}
+ }
+ Copy {
+  inputs 2
+  from0 rgba.red
+  to0 atten.sqrt
+  name Copy3
+  xpos -136
+  ypos 427
+  disable {{abs(parent.sqrtfalloffchannel-1) i}}
+ }
+add_layer {spec spec.r spec.g spec.b spec.a spec.raw}
+ Copy {
+  inputs 2
+  from0 rgba.red
+  to0 spec.r
+  from1 rgba.green
+  to1 spec.g
+  from2 rgba.blue
+  to2 spec.b
+  name Copy5
+  xpos -136
+  ypos 484
+  disable {{abs(parent.specularchannel-1) i}}
+ }
+ Copy {
+  inputs 2
+  from0 rgba.red
+  to0 spec.raw
+  from1 rgba.green
+  to1 -spec.g
+  from2 rgba.blue
+  to2 -spec.b
+  name Copy4
+  xpos -136
+  ypos 562
+  disable {{abs(parent.specularchannel-1) i}}
+ }
+ Output {
+  name Output1
+  xpos -136
+  ypos 670
+ }
+ StickyNote {
+  inputs 0
+  name StickyNote1
+  label Diffuse
+  note_font "Verdana Bold Bold Bold Bold Bold Bold Bold"
+  note_font_size 24
+  xpos 23
+  ypos -130
+ }
+ StickyNote {
+  inputs 0
+  name StickyNote2
+  label Specular
+  note_font "Verdana Bold Bold Bold Bold Bold Bold Bold Bold"
+  note_font_size 24
+  xpos -930
+  ypos -278
+ }
+push $N14e99af0
+push $N158d36a0
+ Viewer {
+  inputs 2
+  name Viewer1
+  xpos -589
+  ypos -514
+ }
+end_group

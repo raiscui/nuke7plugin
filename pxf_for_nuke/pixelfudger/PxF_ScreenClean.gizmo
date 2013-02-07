@@ -1,0 +1,268 @@
+Group {
+ name PxF_ScreenClean
+ inputs 3
+ addUserKnob {20 User}
+ addUserKnob {4 screen_type l ScreenType t "Select the color of\nthe screen you wish\nto clean." M {Red Green Blue "" ""}}
+ screen_type Green
+ addUserKnob {18 screen_color l ScreenColor}
+ screen_color {0.18 0.3 0.1}
+ addUserKnob {26 ""}
+ addUserKnob {26 t l "" t "PxF_ScreenClean.\nInput 1 = Plate.\nInput 2 = Clean Plate.\nUse ScreenClean to erase\nimperfections in a green/blue/red\nscreen using a clean plate." -STARTLINE T "PxF_ScreenClean 2.0.2 - (c) 2012 - Xavier Bourque - www.pixelfudger.com"}
+}
+ Input {
+  inputs 0
+  name mask
+  xpos 419
+  ypos 274
+  number 2
+ }
+ Input {
+  inputs 0
+  name plate
+  xpos 203
+  ypos -448
+ }
+ Dot {
+  name Dot1
+  xpos 209
+  ypos -347
+ }
+set N1ae00360 [stack 0]
+ Dot {
+  name Dot2
+  xpos -64
+  ypos -202
+ }
+ Dot {
+  name Dot3
+  xpos -57
+  ypos 214
+ }
+set N1ac6b800 [stack 0]
+push $N1ac6b800
+push $N1ae00360
+ Shuffle {
+  red blue
+  green blue
+  alpha black
+  name Blue
+  xpos 203
+  ypos -187
+ }
+set N1ac3f1d0 [stack 0]
+push $N1ae00360
+ Shuffle {
+  red green
+  blue green
+  alpha black
+  name Green
+  xpos 112
+  ypos -179
+ }
+set N1ac8d630 [stack 0]
+push $N1ae00360
+ Shuffle {
+  green red
+  blue red
+  alpha black
+  name Red
+  xpos 17
+  ypos -180
+ }
+set N1ade7480 [stack 0]
+ Switch {
+  inputs 3
+  which {{screen_type i x1 0}}
+  name High
+  xpos 17
+  ypos -99
+ }
+push $N1ac8d630
+push $N1ade7480
+ Switch {
+  inputs 2
+  which {{"screen_type == 0 ? 1 : screen_type == 1 ? 0 : 0" i x1 0}}
+  name LowA
+  xpos 145
+  ypos -108
+ }
+push $N1ac3f1d0
+push $N1ac8d630
+push 0
+ Switch {
+  inputs 3
+  which {{"screen_type == 0 ? 2 : screen_type == 1 ? 2 : 1" i x1 1}}
+  name LowB
+  xpos 261
+  ypos -107
+ }
+ Merge2 {
+  inputs 2
+  operation max
+  name Merge1
+  xpos 217
+  ypos -59
+ }
+ Merge2 {
+  inputs 2
+  operation minus
+  name Merge2
+  xpos 116
+  ypos -20
+ }
+ Input {
+  inputs 0
+  name clean_plate
+  xpos 462
+  ypos -437
+  number 1
+ }
+ Dot {
+  name Dot4
+  xpos 530
+  ypos -235
+ }
+set N1c17b6e0 [stack 0]
+ Shuffle {
+  red blue
+  green blue
+  alpha black
+  name Blue1
+  xpos 570
+  ypos -194
+ }
+set N1c17e8b0 [stack 0]
+push $N1c17b6e0
+ Shuffle {
+  red green
+  blue green
+  alpha black
+  name Green1
+  xpos 481
+  ypos -195
+ }
+set N1c189720 [stack 0]
+push $N1c17b6e0
+ Shuffle {
+  green red
+  blue red
+  alpha black
+  name Red1
+  xpos 382
+  ypos -194
+ }
+set N1c194530 [stack 0]
+ Switch {
+  inputs 3
+  which {{screen_type i x1 0}}
+  name High1
+  xpos 401
+  ypos -130
+ }
+push $N1c189720
+push $N1c194530
+ Switch {
+  inputs 2
+  which {{"screen_type == 0 ? 1 : screen_type == 1 ? 0 : 0" i}}
+  name LowA1
+  xpos 498
+  ypos -131
+ }
+push $N1c17e8b0
+push $N1c189720
+push 0
+ Switch {
+  inputs 3
+  which {{"screen_type == 0 ? 2 : screen_type == 1 ? 2 : 1" i}}
+  name LowB1
+  xpos 592
+  ypos -128
+ }
+ Merge2 {
+  inputs 2
+  operation max
+  name Merge3
+  xpos 532
+  ypos -73
+ }
+ Merge2 {
+  inputs 2
+  operation minus
+  name Merge4
+  xpos 429
+  ypos -19
+ }
+ Merge2 {
+  inputs 2
+  operation divide
+  name Merge5
+  xpos 309
+  ypos 87
+ }
+ Clamp {
+  name Clamp1
+  xpos 309
+  ypos 114
+ }
+push $N1c17b6e0
+ Dot {
+  name Dot5
+  xpos 720
+  ypos -198
+ }
+push $N1ae00360
+ Dot {
+  name Dot7
+  xpos 845
+  ypos -231
+ }
+ ColorCorrect {
+  gain 0
+  offset {{screen_color.r i} {screen_color.g i} {screen_color.b i} {1 i}}
+  name ColorCorrect1
+  xpos 817
+  ypos -159
+  postage_stamp true
+ }
+ Merge2 {
+  inputs 2
+  operation minus
+  name Merge6
+  xpos 692
+  ypos -24
+ }
+ Dot {
+  name Dot6
+  xpos 688
+  ypos 165
+ }
+ Merge2 {
+  inputs 2
+  operation multiply
+  name Merge7
+  xpos 309
+  ypos 166
+ }
+ Merge2 {
+  inputs 2
+  operation minus
+  name Merge8
+  xpos 309
+  ypos 215
+ }
+ Keymix {
+  inputs 3
+  invertMask true
+  bbox B
+  name Keymix1
+  selected true
+  xpos 309
+  ypos 299
+  disable {{"\[exists parent.input2] ? 0 : 1" i x1 0}}
+ }
+ Output {
+  name Output1
+  xpos 309
+  ypos 348
+ }
+end_group

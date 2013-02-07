@@ -1,0 +1,180 @@
+Group {
+ name PxF_MergeWrap
+ inputs 2
+ addUserKnob {20 User}
+ addUserKnob {4 backMerge M {Over Plus "" ""}}
+ addUserKnob {6 backDisable l disable -STARTLINE}
+ addUserKnob {7 backBlur R 0 100}
+ backBlur 50
+ addUserKnob {7 backMix}
+ backMix 1
+ addUserKnob {4 frontMerge M {Over Plus}}
+ addUserKnob {6 frontDisable l disable -STARTLINE}
+ addUserKnob {7 frontBlur R 0 100}
+ frontBlur 50
+ addUserKnob {7 frontMix}
+ frontMix 1
+ addUserKnob {26 ""}
+ addUserKnob {26 c l "" +STARTLINE T "PxF_MergeWrap 1.1.1 - (c) 2012 - Xavier Bourque - www.pixelfudger.com"}
+}
+ Input {
+  inputs 0
+  name A
+  xpos 199
+  ypos -651
+  number 1
+ }
+ Dot {
+  name Dot3
+  xpos 243
+  ypos -540
+ }
+set Nc0064790 [stack 0]
+ Input {
+  inputs 0
+  name B
+  xpos 784
+  ypos -713
+ }
+ Dot {
+  name Dot1
+  xpos 818
+  ypos -626
+ }
+set Nc147cce0 [stack 0]
+ Dot {
+  name Dot2
+  xpos 990
+  ypos -556
+ }
+push $Nc0064790
+ Blur {
+  size {{parent.backBlur i}}
+  name Blur22
+  xpos 556
+  ypos -559
+ }
+set Nc005ca20 [stack 0]
+push $Nc147cce0
+ Merge2 {
+  inputs 2
+  operation plus
+  Achannels rgb
+  Bchannels rgb
+  output rgb
+  mix {{parent.backMix i}}
+  name Merge1
+  xpos 861
+  ypos -553
+ }
+push $Nc005ca20
+push $Nc147cce0
+ Merge2 {
+  inputs 2
+  mix {{parent.backMix i}}
+  name Merge95
+  xpos 746
+  ypos -553
+ }
+ Switch {
+  inputs 3
+  which {{"backDisable? 2 : backMerge" i}}
+  name Switch1
+  xpos 809
+  ypos -490
+ }
+ Merge2 {
+  inputs 2
+  name Merge96
+  xpos 809
+  ypos -413
+ }
+set N5241e40 [stack 0]
+ Dot {
+  name Dot5
+  xpos 1061
+  ypos -227
+ }
+push $N5241e40
+ Shuffle {
+  alpha white
+  name Shuffle2
+  xpos 809
+  ypos -328
+ }
+set Nedd916c0 [stack 0]
+ Dot {
+  name Dot4
+  xpos 982
+  ypos -228
+ }
+push $Nc0064790
+push $Nc0064790
+push $Nedd916c0
+ Merge2 {
+  inputs 2
+  operation stencil
+  name Merge97
+  xpos 483
+  ypos -374
+ }
+ Blur {
+  size {{parent.frontBlur i}}
+  name Blur23
+  xpos 483
+  ypos -323
+ }
+ Merge2 {
+  inputs 2
+  operation mask
+  name Merge98
+  xpos 483
+  ypos -234
+ }
+set N52631e0 [stack 0]
+push $Nedd916c0
+ Merge2 {
+  inputs 2
+  operation plus
+  mix {{parent.frontMix i}}
+  name Merge2
+  xpos 838
+  ypos -234
+ }
+push $N52631e0
+push $Nedd916c0
+ Merge2 {
+  inputs 2
+  mix {{parent.frontMix i}}
+  name Merge99
+  xpos 735
+  ypos -234
+ }
+ Switch {
+  inputs 3
+  which {{"frontDisable? 2 : frontMerge" i}}
+  name Switch2
+  xpos 798
+  ypos -165
+ }
+ ShuffleCopy {
+  inputs 2
+  name ShuffleCopy1
+  xpos 798
+  ypos -93
+ }
+set N284c1900 [stack 0]
+ Output {
+  name Output1
+  xpos 798
+  ypos 7
+ }
+push $N284c1900
+ Viewer {
+  input_process false
+  name Viewer1
+  selected true
+  xpos 1069
+  ypos -300
+ }
+end_group

@@ -1,0 +1,118 @@
+#! /vol/apps/nuke-6.1v3_64/Nuke6.1 -nx
+version 6.1 v3
+Gizmo {
+ inputs 2
+ note_font Verdana
+ addUserKnob {20 UnsharpMask}
+ addUserKnob {7 Contrast l Sharpness}
+ Contrast 0.25
+ addUserKnob {7 Blur l Balance R 0 100}
+ Blur 5
+ addUserKnob {26 ""}
+ addUserKnob {6 MaskONOFF l "Use Mask Input" -STARTLINE}
+}
+ Input {
+  inputs 0
+  name Mask
+  note_font Verdana
+  xpos -207
+  ypos 119
+  number 1
+ }
+add_layer {alpha alpha.mask}
+ Constant {
+  inputs 0
+  channels alpha
+  color 1
+  name Constant1
+  note_font Verdana
+  xpos -80
+  ypos 182
+ }
+ Switch {
+  inputs 2
+  which {{MaskONOFF i}}
+  name Switch1
+  note_font Verdana
+  xpos -208
+  ypos 300
+ }
+ Input {
+  inputs 0
+  name Img
+  note_font Verdana
+  xpos -390
+  ypos 108
+ }
+set N1450f4a0 [stack 0]
+ Log2Lin {
+  operation lin2log
+  name Log2Lin1
+  note_font Verdana
+  xpos -544
+  ypos 204
+ }
+set N14495ee0 [stack 0]
+ Multiply {
+  value {{Contrast+1 i}}
+  name Multiply4
+  note_font Verdana
+  xpos -670
+  ypos 316
+ }
+push $N14495ee0
+ Blur {
+  size {{Blur i}}
+  name Blur4
+  note_font Verdana
+  xpos -480
+  ypos 268
+ }
+ Multiply {
+  value {{Contrast i}}
+  name Multiply3
+  note_font Verdana
+  selected true
+  xpos -480
+  ypos 340
+ }
+ Merge2 {
+  inputs 2
+  operation minus
+  name Merge5
+  note_font Verdana
+  xpos -544
+  ypos 396
+ }
+ Log2Lin {
+  name Log2Lin2
+  note_font Verdana
+  xpos -544
+  ypos 444
+ }
+set N1558efd0 [stack 0]
+push $N1450f4a0
+ Keymix {
+  inputs 3
+  bbox A
+  name Keymix1
+  note_font Verdana
+  xpos -390
+  ypos 537
+ }
+ Output {
+  name Output1
+  note_font Verdana
+  xpos -377
+  ypos 638
+ }
+push $N1558efd0
+ Viewer {
+  fps 25
+  center_fstop 0
+  input_process false
+  name Viewer1
+  xpos -559
+  ypos 632
+ }
+end_group

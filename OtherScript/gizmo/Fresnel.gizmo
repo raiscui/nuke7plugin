@@ -1,0 +1,160 @@
+#! C:/Program Files/Nuke6.0v1/Nuke6.0.exe -nx
+version 6.0 v1
+Gizmo {
+ inputs 4
+ addUserKnob {20 User}
+ addUserKnob {41 mix l AttenuateRef T ATTENUATE_REFL.mix}
+ addUserKnob {41 multiply l BoostLuma T BOOST_LUMA.multiply}
+ addUserKnob {41 mix_1 l OccludeRef T OCCLUDE_REFL.mix}
+ addUserKnob {41 realGain l "Perlin Gain" T Perlin_gain1.realGain}
+}
+ Input {
+  inputs 0
+  name AO
+  xpos 290
+  ypos 398
+  number 3
+ }
+ Input {
+  inputs 0
+  name P
+  xpos -370
+  ypos 158
+ }
+ Expression {
+  temp_name0 Plength
+  temp_expr0 sqrt(pow2(Br)+pow2(Bg)+pow2(Bb))+0.00001
+  expr0 Br/Plength
+  expr1 Bg/Plength
+  expr2 Bb/Plength
+  name I_normalized
+  xpos -370
+  ypos 254
+ }
+ Multiply {
+  channels rgb
+  value -1
+  name V
+  xpos -370
+  ypos 278
+ }
+ Input {
+  inputs 0
+  name N
+  xpos -150
+  ypos 158
+  number 1
+ }
+ MergeExpression {
+  inputs 2
+  temp_name0 IdotN
+  temp_expr0 Ar*Br+Ag*Bg+Ab*Bb
+  expr0 IdotN
+  expr1 IdotN
+  expr2 IdotN
+  expr3 Ba
+  name _IdotN_
+  xpos -150
+  ypos 278
+  addUserKnob {20 "" l User}
+ }
+ Unpremult {
+  name Unpremult1
+  xpos -150
+  ypos 302
+ }
+ Invert {
+  channels rgb
+  clamp true
+  name Invert1
+  xpos -150
+  ypos 326
+ }
+ Group {
+  name Perlin_gain1
+  help "This is an implementation of Ken Perlin's gain function. It boosts micro-contrast (acutance, in photographic terms) without clipping. When set to 0.5, it has no effect. When >0.5, gain is boosted; when <.5, gain is muted. Only luminance is affected; not hue nor saturation. Superwhites remain untouched."
+  tile_color 0xcc9d6d00
+  xpos -150
+  ypos 350
+  addUserKnob {20 "" l User}
+  addUserKnob {7 realGain l "Perlin Gain function" t "This is an implementation of Ken Perlin's gain function. It boosts micro-contrast (acutance, in photographic terms) without clipping. When set to 0.5, it has no effect. When >0.5, gain is boosted; when <.5, gain is muted. Only luminance is affected; not hue nor saturation. Superwhites remain untouched."}
+  realGain 0.5
+ }
+  Input {
+   inputs 0
+   name Input1
+   xpos 130
+   ypos -89
+  }
+  Expression {
+   temp_name0 gain
+   temp_expr0 parent.realGain
+   temp_name1 lum
+   temp_expr1 "0.2125*Br + 0.7154*Bg + 0.0721*Bb"
+   temp_name2 val
+   temp_expr2 .5*((lum<.5)?((1-gain)>0?pow(2*lum,log(1-gain)/log(0.5)):0):2-((1-gain)>0?pow(2-2*lum,log(1-gain)/log(0.5)):0))
+   expr0 r>1?r:r*(val/(lum+0.00001))
+   expr1 g>1?g:g*(val/(lum+0.00001))
+   expr2 b>1?b:b*(val/(lum+0.00001))
+   name KPGain
+   tile_color 0xd47f3b00
+   label "TRUE GAIN\nFUNCTION"
+   selected true
+   xpos 130
+   ypos -24
+   addUserKnob {20 "" l User}
+  }
+  Output {
+   name Output1
+   xpos 130
+   ypos 98
+  }
+ end_group
+ Input {
+  inputs 0
+  name Ref
+  xpos 70
+  ypos 158
+  number 2
+ }
+ Merge2 {
+  inputs 2
+  operation multiply
+  name ATTENUATE_REFL
+  xpos 70
+  ypos 350
+ }
+ Grade {
+  name BOOST_LUMA
+  xpos 70
+  ypos 374
+ }
+ Merge2 {
+  inputs 2
+  operation multiply
+  Achannels {rgba.red rgba.green rgba.blue -rgba.alpha}
+  Bchannels {rgba.red rgba.green rgba.blue -rgba.alpha}
+  output {rgba.red rgba.green rgba.blue -rgba.alpha}
+  name OCCLUDE_REFL
+  xpos 70
+  ypos 398
+ }
+ Premult {
+  name Premult1
+  xpos 70
+  ypos 422
+ }
+set N1281e070 [stack 0]
+ Output {
+  name Output1
+  xpos 70
+  ypos 566
+ }
+push $N1281e070
+ Viewer {
+  input_process false
+  name Viewer1
+  xpos 290
+  ypos 542
+ }
+end_group

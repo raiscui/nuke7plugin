@@ -1,0 +1,5 @@
+#=============------------   Prometeus SYSTEM ------------ =============#
+#menuBar.addCommand('P/test','initRenderDialog()')
+
+#from proNuke import pro_wp
+#menuBar.addCommand('Prometeus/设置3屏节点/开始结束帧'.decode('utf-8'),'pro_wp.setSE()')

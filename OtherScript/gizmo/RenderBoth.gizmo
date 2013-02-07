@@ -1,0 +1,71 @@
+#! C:/Programme/Nuke5.1v6/Nuke5.1.exe -nx
+version 5.1600
+Gizmo {
+ inputs 4
+ addUserKnob {20 settings l Settings}
+ addUserKnob {41 scanline_samples l "Scanline Samples" t "Adjust quality of the scanline renderer" T ScanlineRender5.samples}
+}
+ BackdropNode {
+  inputs 0
+  name Textures
+  xpos -455
+  ypos -456
+  bdwidth 1073
+  bdheight 121
+ }
+ BackdropNode {
+  inputs 0
+  name RenderFG
+  xpos -141
+  ypos -313
+  bdwidth 297
+  bdheight 347
+ }
+ Input {
+  inputs 0
+  name Camera
+  xpos 249
+  ypos -379
+  number 2
+ }
+ Input {
+  inputs 0
+  name ReceivingGeo
+  xpos 0
+  ypos -397
+  number 3
+ }
+ Input {
+  inputs 0
+  name CastingGeo
+  xpos -100
+  ypos -396
+ }
+ Input {
+  inputs 0
+  name Light
+  xpos 114
+  ypos -393
+  number 1
+ }
+ Scene {
+  inputs 3
+  name Scene3
+  xpos 4
+  ypos -271
+ }
+push 0
+ ScanlineRender {
+  inputs 3
+  transparency false
+  samples 13
+  name ScanlineRender5
+  xpos -6
+  ypos -52
+ }
+ Output {
+  name FG
+  xpos -54
+  ypos 140
+ }
+end_group

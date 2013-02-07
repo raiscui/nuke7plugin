@@ -1,0 +1,39 @@
+#! C:/Program Files/Nuke6.0v1/Nuke6.0.exe -nx
+version 6.0 v1
+Gizmo {
+ addUserKnob {20 User}
+ addUserKnob {41 channels T AA1.channels}
+ addUserKnob {41 matrix T AA1.matrix}
+ addUserKnob {41 normalize -STARTLINE T AA1.normalize}
+ addUserKnob {26 "" l mask}
+ addUserKnob {41 maskChannelInput l "" -STARTLINE T AA1.maskChannelInput}
+ addUserKnob {41 inject -STARTLINE T AA1.inject}
+ addUserKnob {41 invert_mask l invert -STARTLINE T AA1.invert_mask}
+ addUserKnob {41 fringe -STARTLINE T AA1.fringe}
+ addUserKnob {41 mix T AA1.mix}
+}
+ Input {
+  inputs 0
+  name Input1
+  xpos -150
+  ypos 38
+ }
+ Matrix {
+  channels rgb
+  matrix {
+      {1 2 1}
+      {2 4 2}
+      {1 2 1}
+    }
+  normalize true
+  name AA1
+  selected true
+  xpos -150
+  ypos 86
+ }
+ Output {
+  name Output1
+  xpos -150
+  ypos 182
+ }
+end_group

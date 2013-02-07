@@ -1,0 +1,436 @@
+#! C:/Program Files/Nuke6.0v4/Nuke6.0.exe -nx
+version 6.0 v4
+Gizmo {
+ inputs 4
+help "-Performs brights and darks glows in one handy tool with lots of parameters.
+
+-First use view_threshold tickbox to finetune threshold parameters
+You can add global tint by colorize the PostGain parameter.
+
+-For darks glow there are extra options to avoid darks darken super brights. Because it hasn't to.
+
+- All inputs are optionals except SOURCE of course.
+- Brights_Mask allow to restrict the brights glow source areas. It is not masking, which is quiet useless.
+- Darks_Mask i think you've understood ...
+- Glow_Source allow to choose an alternate image to generate the glow. For example you can use a quick comp as Glow Source and then processing brightGlow and darkGlow on a RGBA source.
+"
+ tile_color 0xffe50000
+ addUserKnob {20 glows_hub}
+ addUserKnob {6 No_darkGlows_please +STARTLINE}
+ addUserKnob {6 Bright_NOblend l Output_only_bright_pass +STARTLINE}
+ addUserKnob {6 Dark_NOblend l INVISIBLE +INVISIBLE +STARTLINE}
+ addUserKnob {20 BrightGlows n 1}
+ addUserKnob {41 bright_glow_MIX T Bright_glow_merge.mix}
+ addUserKnob {41 filter T Blur_brights.filter}
+ addUserKnob {41 size -STARTLINE T Blur_brights.size}
+ addUserKnob {41 saturation T Saturation_brights.saturation}
+ addUserKnob {41 white l PostGain T PostGain.white}
+ addUserKnob {41 operation T Bright_glow_merge.operation}
+ addUserKnob {41 threshold_blackpoint_b l threshold_blackpoint T Threshold_brights.blackpoint}
+ addUserKnob {41 threshold_whitepoint_b l threshold_whitepoint T Threshold_brights.whitepoint}
+ addUserKnob {6 view_threshold +STARTLINE}
+ addUserKnob {26 ""}
+ addUserKnob {20 brights_endGroup n -1}
+ addUserKnob {20 DarkGlows n 1}
+ addUserKnob {41 dark_glow_MIX T DarkGlow_merge.mix}
+ addUserKnob {41 filter_1 l filter T Blur_darks.filter}
+ addUserKnob {41 size_1 l size -STARTLINE T Blur_darks.size}
+ addUserKnob {41 saturation_1 l saturation T SaturationDarks.saturation}
+ addUserKnob {41 threshold_blackpoint_d l threshold_blackpoint T Threshold_darks.blackpoint}
+ addUserKnob {41 threshold_whitepoint_d l threshold_whitepoint T Threshold_darks.whitepoint}
+ addUserKnob {6 view_threshold_d l view_threshold +STARTLINE}
+ addUserKnob {26 ""}
+ addUserKnob {6 DarkGlow_dont_affect_Highlights +STARTLINE}
+ DarkGlow_dont_affect_Highlights true
+ addUserKnob {41 mix_3 l mix -STARTLINE T HL_saving_merge.mix}
+ addUserKnob {41 blackpoint T HL_saving_MSK.blackpoint}
+ addUserKnob {41 whitepoint T HL_saving_MSK.whitepoint}
+ addUserKnob {6 view_mask_HL_keep l view_mask +STARTLINE}
+ addUserKnob {20 darks_endGroup n -1}
+ addUserKnob {20 MASKS n 1}
+ addUserKnob {41 brightGlows_mask l brightGlows T Shuffle_bright_mask.in}
+ addUserKnob {41 mix_1 l mix -STARTLINE T Merge_brightMASK.mix}
+ addUserKnob {6 invert_brightMSK l invert -STARTLINE}
+ addUserKnob {41 darkGlows_mask l darkGlows T Shuffle_dark_mask.in}
+ addUserKnob {41 mix_2 l mix -STARTLINE T MergeDarkMASK.mix}
+ addUserKnob {6 invert_darkMSK l invert -STARTLINE}
+ addUserKnob {20 endGroup_bright_mask n -1}
+ addUserKnob {20 philhub_2010 n 1}
+ philhub_2010 0
+ addUserKnob {26 philpmaATfreeDOTfr}
+ addUserKnob {20 endGroup n -1}
+}
+ Input {
+  inputs 0
+  name brights_mask
+  xpos 921
+  ypos 129
+  number 1
+ }
+ Shuffle {
+  in alpha
+  red green
+  alpha green
+  out alpha
+  name Shuffle_bright_mask
+  label "\[value in]"
+  xpos 921
+  ypos 230
+ }
+ Expression {
+  channel0 rgb
+  expr0 a
+  channel1 alpha
+  expr1 1
+  name Expression1
+  xpos 921
+  ypos 282
+ }
+ Invert {
+  channels rgb
+  name Invert5
+  xpos 921
+  ypos 320
+  disable {{1-invert_brightMSK i}}
+ }
+ Input {
+  inputs 0
+  name glow_source
+  xpos 461
+  ypos 44
+  number 3
+ }
+ Input {
+  inputs 0
+  name SOURCE
+  xpos 300
+  ypos 52
+ }
+set N501f000 [stack 0]
+ Switch {
+  inputs 2
+  which {{"\[ exists parent.input\[value glow_source.number] ]"}}
+  name Switch_glow_source
+  xpos 461
+  ypos 129
+ }
+set Nc7b1240 [stack 0]
+ Saturation {
+  mode Average
+  name Saturation_brights
+  xpos 648
+  ypos 200
+ }
+ Grade {
+  channels rgba
+  blackpoint 0.11
+  whitepoint 0.86
+  name Threshold_brights
+  xpos 648
+  ypos 240
+ }
+set Nc7b8968 [stack 0]
+ Merge2 {
+  inputs 2
+  operation multiply
+  name Merge_brightMASK
+  xpos 738
+  ypos 320
+ }
+push $Nc7b8968
+ Switch {
+  inputs 2
+  which {{"\[ exists parent.input\[value brights_mask.number] ]"}}
+  name SwitchBrightMask
+  xpos 648
+  ypos 370
+ }
+set Nc7bf9b0 [stack 0]
+ Dot {
+  name Dot1
+  xpos 1119
+  ypos 377
+ }
+ Dot {
+  name Dot3
+  xpos 1119
+  ypos 829
+ }
+ Input {
+  inputs 0
+  name darks_mask
+  xpos 71
+  ypos 115
+  number 2
+ }
+ Shuffle {
+  in alpha
+  red green
+  alpha green
+  out alpha
+  name Shuffle_dark_mask
+  label "\[value in]"
+  xpos 71
+  ypos 185
+ }
+ Expression {
+  channel0 rgb
+  expr0 a
+  channel1 alpha
+  expr1 1
+  name Expression2
+  xpos 71
+  ypos 288
+ }
+ Invert {
+  channels rgb
+  name Invert1
+  xpos 71
+  ypos 320
+  disable {{1-invert_darkMSK i}}
+ }
+push $Nc7b1240
+ Saturation {
+  saturation 0
+  mode Average
+  name SaturationDarks
+  xpos 417
+  ypos 210
+ }
+set Nc7de4e8 [stack 0]
+ Grade {
+  channels {rgba.red rgba.green rgba.blue -rgba.alpha}
+  blackpoint 0.1
+  whitepoint 0.165
+  name Threshold_darks
+  xpos 417
+  ypos 236
+ }
+ Invert {
+  channels rgb
+  clamp true
+  name Invert2
+  xpos 417
+  ypos 274
+ }
+set Nc7e8940 [stack 0]
+ Merge2 {
+  inputs 2
+  operation multiply
+  name MergeDarkMASK
+  xpos 510
+  ypos 320
+  disable {{1-Mask_darks i}}
+ }
+push $Nc7e8940
+ Switch {
+  inputs 2
+  which {{"\[ exists parent.input\[value darks_mask.number] ]"}}
+  name SwitchDarkMask
+  xpos 417
+  ypos 374
+ }
+set Nc7ee578 [stack 0]
+ Dot {
+  name Dot5
+  xpos 80
+  ypos 381
+ }
+ Dot {
+  name Dot4
+  xpos 80
+  ypos 893
+ }
+push $Nc7de4e8
+ Dot {
+  name Dot2
+  xpos 175
+  ypos 217
+ }
+ Grade {
+  blackpoint 0.37
+  whitepoint 0.575
+  name HL_saving_MSK
+  xpos 132
+  ypos 629
+ }
+set Nc7fd358 [stack 0]
+ Dot {
+  name Dot8
+  xpos 186
+  ypos 944
+ }
+push $Nc7ee578
+ Blur {
+  channels {rgba.red rgba.green rgba.blue -rgba.alpha}
+  size 140
+  name Blur_darks
+  label "\n"
+  xpos 417
+  ypos 428
+ }
+set Nc804d18 [stack 0]
+ Dot {
+  name Dot11
+  xpos -66
+  ypos 624
+ }
+push $Nc7bf9b0
+ Blur {
+  channels rgba
+  size 100
+  name Blur_brights
+  label "\n"
+  selected true
+  xpos 648
+  ypos 425
+ }
+ Grade {
+  white {1 1 1 1}
+  name PostGain
+  xpos 648
+  ypos 521
+ }
+ Expression {
+  channel0 {-rgba.red -rgba.green -rgba.blue rgba.alpha}
+  expr0 (r+g+b)/3
+  name LtoA
+  xpos 648
+  ypos 622
+ }
+set Nc816b50 [stack 0]
+ Dot {
+  name Dot9
+  xpos 985
+  ypos 626
+ }
+push $Nc816b50
+push $N501f000
+ Dot {
+  name Dot6
+  xpos 334
+  ypos 149
+ }
+set Nc81e1b0 [stack 0]
+ Dot {
+  name Dot12
+  xpos 334
+  ypos 710
+ }
+push $Nc7fd358
+push $Nc81e1b0
+ Dot {
+  name Dot7
+  xpos 360
+  ypos 398
+ }
+ Dot {
+  name Dot10
+  xpos 360
+  ypos 570
+ }
+push $Nc804d18
+push $N501f000
+ Invert {
+  channels rgb
+  clamp true
+  name Invert4
+  xpos 224
+  ypos 462
+ }
+ Merge2 {
+  inputs 2
+  operation screen
+  Achannels {rgba.red rgba.green rgba.blue -rgba.alpha}
+  Bchannels {rgba.red rgba.green rgba.blue -rgba.alpha}
+  output {rgba.red rgba.green rgba.blue -rgba.alpha}
+  mix 0.6
+  name DarkGlow_merge
+  xpos 417
+  ypos 472
+ }
+ Invert {
+  channels rgb
+  clamp true
+  name Invert3
+  xpos 417
+  ypos 524
+ }
+ Merge2 {
+  inputs 2+1
+  maskChannelMask rgba.red
+  mix 0.35
+  name HL_saving_merge
+  xpos 417
+  ypos 640
+  disable {{1-DarkGlow_dont_affect_Highlights i}}
+ }
+set Nc8367f8 [stack 0]
+ Switch {
+  inputs 2
+  which {{No_darkGlows_please i}}
+  name SwitchDarkGlow
+  xpos 417
+  ypos 736
+ }
+ Merge2 {
+  inputs 2
+  operation screen
+  name Bright_glow_merge
+  xpos 648
+  ypos 736
+ }
+set Nc840018 [stack 0]
+ Switch {
+  inputs 2
+  which {{Bright_NOblend i}}
+  name SwitchBrightNoBlend
+  xpos 731
+  ypos 832
+ }
+ Switch {
+  inputs 2
+  which {{Dark_NOblend i}}
+  name SwitchDarkNoBlend
+  xpos 574
+  ypos 906
+ }
+ Switch {
+  inputs 2
+  which {{view_mask_HL_keep i}}
+  name Switch_HLsaving_MSK
+  xpos 651
+  ypos 990
+ }
+ Switch {
+  inputs 2
+  which {{view_threshold_d i}}
+  name Switch_threshod_darks
+  xpos 661
+  ypos 1061
+ }
+ Switch {
+  inputs 2
+  which {{view_threshold i}}
+  name Switch_threshod_brights
+  xpos 661
+  ypos 1139
+ }
+ Output {
+  name Output1
+  xpos 661
+  ypos 1195
+ }
+push $Nc8367f8
+push $Nc840018
+push $N501f000
+ Viewer {
+  inputs 3
+  input_number 1
+  input_process false
+  translate {-0.1175 -0.125}
+  name Viewer1
+  xpos 220
+  ypos 1057
+ }
+end_group

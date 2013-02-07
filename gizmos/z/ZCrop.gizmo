@@ -1,0 +1,318 @@
+#! C:/Program Files/Nuke6.3v2/Nuke6.3.exe -nx
+version 6.3 v2
+Gizmo {
+ inputs 2
+ note_font Verdana
+ mapsize {0.15 0.15}
+ addUserKnob {20 zcrop l "Z Crop"}
+ addUserKnob {41 type T Group1.type}
+ addUserKnob {4 modes -STARTLINE M {Final Work Depth}}
+ addUserKnob {41 clamp -STARTLINE T StickyNote1.clamp}
+ addUserKnob {41 addz l "add Depth" -STARTLINE T StickyNote1.addz}
+ addUserKnob {41 distance T StickyNote1.distance}
+ addUserKnob {41 multiplayer l "z multiplayer" T StickyNote1.multiplayer}
+ addUserKnob {41 crop T StickyNote1.crop}
+ addUserKnob {41 softness T StickyNote1.softness}
+ addUserKnob {20 alpha l Alpha}
+ addUserKnob {41 showalpha l "show alpha" T StickyNote1.showalpha}
+ addUserKnob {41 premult -STARTLINE T StickyNote1.premult}
+ addUserKnob {41 multiply T StickyNote1.multiply}
+ addUserKnob {41 softness_1 l softness T StickyNote1.softness_1}
+ addUserKnob {41 gamma T StickyNote1.gamma}
+}
+ Input {
+  inputs 0
+  name Depth
+  xpos -711
+  ypos -296
+ }
+set N90a84f0 [stack 0]
+ Dot {
+  name Dot6
+  xpos -37
+  ypos -293
+ }
+ Input {
+  inputs 0
+  name Color
+  xpos -514
+  ypos -223
+  number 1
+ }
+push $N90a84f0
+ Grade {
+  white {{parent.StickyNote1.distance}}
+  multiply {{parent.StickyNote1.multiplayer}}
+  add {{parent.StickyNote1.crop}}
+  gamma {{parent.StickyNote1.softness}}
+  name Grade1
+  xpos -711
+  ypos -177
+ }
+ Clamp {
+  name Clamp1
+  xpos -711
+  ypos -153
+  disable {{!parent.StickyNote1.clamp i}}
+ }
+set N90a8b50 [stack 0]
+ Group {
+  inputs 2
+  name Group1
+  tile_color 0xf4aaffff
+  note_font Verdana
+  xpos -514
+  ypos -153
+  mapsize {0.15 0.15}
+  addUserKnob {20 settings l Settings}
+  addUserKnob {4 type l Type M {Original Inverted ""}}
+  addUserKnob {20 channels l Channels}
+  addUserKnob {41 from0 l From T Copy1.from0}
+  addUserKnob {41 to0 l To -STARTLINE T Copy1.to0}
+  addUserKnob {26 ""}
+  addUserKnob {41 mix l Mix T Copy1.mix}
+ }
+  Input {
+   inputs 0
+   name MaskChannel
+   xpos 308
+   ypos 60
+  }
+  Input {
+   inputs 0
+   name Input1
+   xpos 418
+   ypos -5
+   number 1
+  }
+  Copy {
+   inputs 2
+   from0 rgba.red
+   to0 rgba.alpha
+   name Copy1
+   xpos 418
+   ypos 54
+  }
+set N90aa4d0 [stack 0]
+  Invert {
+   channels alpha
+   name Invert1
+   xpos 691
+   ypos 54
+  }
+  Premult {
+   name Premult2
+   xpos 691
+   ypos 181
+  }
+push $N90aa4d0
+  Premult {
+   name Premult1
+   xpos 418
+   ypos 133
+  }
+  Switch {
+   inputs 2
+   which {{type i}}
+   name Switch1
+   xpos 418
+   ypos 181
+  }
+  Output {
+   name Output1
+   xpos 418
+   ypos 281
+  }
+ end_group
+ Dot {
+  name Dot2
+  xpos -480
+  ypos -28
+ }
+set N9170bb0 [stack 0]
+ Dot {
+  name Dot9
+  xpos -212
+  ypos -28
+ }
+ Grade {
+  channels alpha
+  multiply {{parent.StickyNote1.multiply i}}
+  add {{parent.StickyNote1.softness_1 i}}
+  gamma {{parent.StickyNote1.gamma i}}
+  name Grade2
+  xpos -246
+  ypos 284
+ }
+ set C9171ed0 [stack 0]
+ Shuffle {
+  in alpha
+  alpha white
+  name Shuffle1
+  xpos -246
+  ypos 339
+ }
+ Transform {
+  translate {-289 -162}
+  scale 0.4
+  center {480 270}
+  name Transform2
+  xpos -246
+  ypos 363
+ }
+ Clamp {
+  channels alpha
+  name Clamp2
+  xpos -246
+  ypos 387
+ }
+ set C9172530 [stack 0]
+ Text {
+  message Alpha
+  font C:/Windows/Fonts/arial.ttf
+  size 30
+  yjustify center
+  Transform 1
+  box {579 281 836 417}
+  translate {-579 -338.5}
+  center {621.5 351}
+  color {1 0 0 1}
+  name Text2
+  xpos -246
+  ypos 423
+ }
+push $N90a8b50
+ Dot {
+  name Dot1
+  xpos -771
+  ypos -144
+ }
+set N90a8e80 [stack 0]
+ Dot {
+  name Dot3
+  xpos -870
+  ypos -144
+ }
+ Dot {
+  name Dot4
+  xpos -870
+  ypos 120
+ }
+push $N90a8e80
+ Transform {
+  translate {-289 -162}
+  scale 0.4
+  center {480 270}
+  name Transform1
+  xpos -805
+  ypos -55
+ }
+ Text {
+  message Depth
+  font C:/Windows/Fonts/arial.ttf
+  size 30
+  yjustify center
+  Transform 1
+  box {579 281 836 417}
+  translate {-579 -338.5}
+  center {621.5 351}
+  color {1 0 0 1}
+  name Text1
+  xpos -805
+  ypos -31
+ }
+push $N9170bb0
+ Merge2 {
+  inputs 2
+  name Merge1
+  xpos -649
+  ypos -31
+ }
+ Dot {
+  name Dot5
+  xpos -615
+  ypos 13
+ }
+push $N9170bb0
+ Switch {
+  inputs 3
+  which {{modes i}}
+  name Switch1
+  xpos -514
+  ypos 117
+ }
+clone $C9171ed0 {
+  xpos -514
+  ypos 284
+  selected false
+ }
+clone $C9172530 {
+  xpos -514
+  ypos 390
+  selected false
+ }
+ Dot {
+  name Dot7
+  xpos -480
+  ypos 462
+ }
+ Merge2 {
+  inputs 2
+  name Merge2
+  xpos -246
+  ypos 459
+  disable {{!parent.StickyNote1.showalpha i}}
+ }
+ Dot {
+  name Dot8
+  xpos -212
+  ypos 517
+ }
+ Copy {
+  inputs 2
+  from0 rgba.red
+  to0 depth.Z
+  name Copy1
+  xpos -71
+  ypos 508
+  disable {{!parent.StickyNote1.addz i}}
+ }
+ Premult {
+  name Premult1
+  xpos -71
+  ypos 544
+  disable {{!parent.StickyNote1.premult i}}
+ }
+ Output {
+  name Output1
+  xpos 122
+  ypos 582
+ }
+ StickyNote {
+  inputs 0
+  name StickyNote1
+  label Controls
+  xpos -209
+  ypos -147
+  addUserKnob {20 settings}
+  addUserKnob {6 clamp +STARTLINE}
+  clamp true
+  addUserKnob {6 addz l "add Depth" -STARTLINE}
+  addz true
+  addUserKnob {7 distance R 0.1 5}
+  distance 1
+  addUserKnob {7 multiplayer l "z multiplayer" R 0.1 5}
+  multiplayer 1
+  addUserKnob {7 crop R -1 1}
+  addUserKnob {7 softness R 0.1 5}
+  softness 1
+  addUserKnob {20 alpha}
+  addUserKnob {6 showalpha l "show alpha" +STARTLINE}
+  addUserKnob {6 premult -STARTLINE}
+  addUserKnob {7 multiply R 1 10}
+  multiply 1
+  addUserKnob {7 softness_1 l softness R -0.5 0}
+  addUserKnob {7 gamma R 1 5}
+  gamma 1
+ }
+end_group

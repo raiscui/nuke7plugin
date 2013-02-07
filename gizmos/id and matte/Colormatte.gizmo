@@ -1,0 +1,299 @@
+#! C:/Program Files/Nuke6.3v4/Nuke6.3.exe -nx
+version 6.3 v4
+Gizmo {
+ inputs 3
+ note_font Verdana
+ mapsize {0.15 0.15}
+ addUserKnob {20 Colormatte}
+ addUserKnob {4 color_channel l Color_Channel M {RGBA Red Green Blue Alpha "" ""}}
+ addUserKnob {4 channel l Matte_Channel M {none Red Green Blue Alpha "" "" ""}}
+ addUserKnob {41 size l Matte_Erode T Erode1.size}
+ addUserKnob {41 Matte_Blur T Erode1.blur}
+ addUserKnob {41 Matte_mix T Erode1.mix}
+ addUserKnob {6 premultiply l Premultiply +STARTLINE}
+ addUserKnob {26 ""}
+ addUserKnob {6 invert l Matteinvert +STARTLINE}
+ addUserKnob {6 invertmask l Invertmask -STARTLINE}
+}
+ Input {
+  inputs 0
+  name matte
+  xpos -480
+  ypos -201
+ }
+ Shuffle {
+  name Shuffle1
+  xpos -480
+  ypos -153
+ }
+set N7c7571e0 [stack 0]
+ Shuffle {
+  red black
+  green black
+  blue black
+  name alpha
+  xpos -260
+  ypos -105
+ }
+ Input {
+  inputs 0
+  name Color
+  xpos 180
+  ypos -633
+  number 1
+ }
+ Shuffle {
+  name Shuffle2
+  xpos 180
+  ypos -537
+ }
+set N7c757b70 [stack 0]
+ Shuffle {
+  red alpha
+  green alpha
+  blue alpha
+  name Color_alpha
+  xpos 360
+  ypos -467
+ }
+push $N7c757b70
+ Shuffle {
+  red blue
+  green blue
+  alpha blue
+  name Color_blue
+  xpos 273
+  ypos -467
+ }
+push $N7c757b70
+ Shuffle {
+  red green
+  blue green
+  alpha green
+  name Color_green
+  xpos 180
+  ypos -465
+ }
+push $N7c757b70
+ Shuffle {
+  green red
+  blue red
+  alpha red
+  name Color_red
+  xpos 89
+  ypos -466
+ }
+push $N7c757b70
+ Shuffle {
+  name Color_RGBA
+  xpos -2
+  ypos -467
+ }
+ Switch {
+  inputs 5
+  which {{parent.color_channel i}}
+  name Switch2
+  xpos 180
+  ypos -369
+ }
+set N87f8f130 [stack 0]
+ Copy {
+  inputs 2
+  from0 rgba.alpha
+  to0 rgba.alpha
+  name Copy4
+  xpos 360
+  ypos -280
+ }
+push $N87f8f130
+ Merge2 {
+  inputs 2
+  operation in
+  name Merge5
+  xpos 360
+  ypos -226
+ }
+ Premult {
+  name Premult4
+  xpos 360
+  ypos -178
+ }
+push $N7c7571e0
+ Shuffle {
+  red black
+  green black
+  blue black
+  alpha blue
+  name blue
+  xpos -260
+  ypos -129
+ }
+push $N87f8f130
+ Copy {
+  inputs 2
+  from0 rgba.alpha
+  to0 rgba.alpha
+  name Copy3
+  xpos 240
+  ypos -281
+ }
+push $N87f8f130
+ Merge2 {
+  inputs 2
+  operation in
+  name Merge4
+  xpos 240
+  ypos -227
+ }
+ Premult {
+  name Premult3
+  xpos 240
+  ypos -179
+ }
+push $N7c7571e0
+ Shuffle {
+  red black
+  green black
+  blue black
+  alpha green
+  name green
+  xpos -260
+  ypos -153
+ }
+push $N87f8f130
+ Copy {
+  inputs 2
+  from0 rgba.alpha
+  to0 rgba.alpha
+  name Copy2
+  xpos 121
+  ypos -284
+ }
+push $N87f8f130
+ Merge2 {
+  inputs 2
+  operation in
+  name Merge2
+  xpos 121
+  ypos -230
+ }
+ Premult {
+  name Premult2
+  xpos 121
+  ypos -182
+ }
+push $N7c7571e0
+ Shuffle {
+  red black
+  green black
+  blue black
+  alpha red
+  name red
+  xpos -260
+  ypos -177
+ }
+push $N87f8f130
+ Copy {
+  inputs 2
+  from0 rgba.alpha
+  to0 rgba.alpha
+  name Copy1
+  xpos 13
+  ypos -286
+ }
+push $N87f8f130
+ Merge2 {
+  inputs 2
+  operation in
+  name Merge3
+  xpos 13
+  ypos -232
+ }
+ Premult {
+  name Premult1
+  xpos 13
+  ypos -184
+ }
+push $N87f8f130
+ Shuffle {
+  name Shuffle3
+  xpos -121
+  ypos -285
+ }
+ Switch {
+  inputs 5
+  which {{parent.channel i}}
+  name Switch1
+  xpos 121
+  ypos -39
+ }
+set N87f8f480 [stack 0]
+push $N87f8f480
+ Erode {
+  channels alpha
+  size 0
+  name Erode1
+  xpos 253
+  ypos 5
+ }
+ Merge2 {
+  inputs 2
+  operation in
+  mix {{parent.premultiply i}}
+  name Merge6
+  xpos 121
+  ypos 11
+ }
+ Invert {
+  mix {{parent.invert i}}
+  name Invert2
+  xpos 121
+  ypos 75
+ }
+ Premult {
+  alpha -rgba.alpha
+  name Premult5
+  xpos 121
+  ypos 129
+ }
+ Input {
+  inputs 0
+  name mask
+  xpos 451
+  ypos 153
+  number 2
+ }
+ Invert {
+  name Invert1
+  xpos 341
+  ypos 147
+ }
+ Invert {
+  mix {{parent.invertmask i}}
+  name Invert3
+  xpos 231
+  ypos 147
+ }
+ Merge2 {
+  inputs 2
+  operation minus
+  name Merge1
+  xpos 121
+  ypos 153
+ }
+ Output {
+  name Output1
+  xpos 121
+  ypos 225
+ }
+push $N7c7571e0
+ Shuffle {
+  red black
+  green black
+  blue black
+  alpha black
+  name none
+  xpos -260
+  ypos -212
+ }
+end_group

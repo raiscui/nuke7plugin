@@ -1,0 +1,199 @@
+#! C:/Program Files/Nuke6.3v1/Nuke6.3.exe -nx
+version 6.3 v1
+Gizmo {
+ inputs 5
+ addUserKnob {20 GJ_RimLight l "GJ RimLight"}
+ addUserKnob {6 choice l "Use RimLight" +STARTLINE}
+ choice true
+ addUserKnob {41 operation T Merge1.operation}
+ addUserKnob {26 ""}
+ addUserKnob {41 intensity l Intensity T RimLight.intensity}
+ addUserKnob {7 pos_Angle l Angle R -180 180}
+ pos_Angle 150
+ addUserKnob {7 pos_Height l Height R -180 180}
+ pos_Height -20
+ addUserKnob {26 ""}
+ addUserKnob {26 txt l "" +STARTLINE T "Shader parameters:"}
+ addUserKnob {41 color T Phong1.color}
+ addUserKnob {41 diffuse T Phong1.diffuse}
+ addUserKnob {41 specular T Phong1.specular}
+ addUserKnob {41 min_shininess l "min shininess" T Phong1.min_shininess}
+ addUserKnob {41 max_shininess l "max shininess" T Phong1.max_shininess}
+ addUserKnob {26 ""}
+ addUserKnob {41 maskChannelMask l mask -STARTLINE T Merge1.maskChannelMask}
+ addUserKnob {41 inject -STARTLINE T Merge1.inject}
+ addUserKnob {41 invert_mask l invert -STARTLINE T Merge1.invert_mask}
+ addUserKnob {41 fringe -STARTLINE T Merge1.fringe}
+ addUserKnob {41 mix T Merge1.mix}
+ addUserKnob {26 ""}
+ addUserKnob {20 AOGRP l Ambient}
+ addUserKnob {41 ambient l "Add ambient" T ReLight1.ambient}
+ addUserKnob {26 ""}
+ addUserKnob {6 useAO l "Use Ambient Occlusion" +STARTLINE}
+ addUserKnob {6 invAO l Invert +STARTLINE}
+ invAO true
+ addUserKnob {41 maskChannelMask_1 l "Use Channel :" T Grade_AO.maskChannelMask}
+ addUserKnob {41 white l gain T Grade_AO.white}
+}
+ Input {
+  inputs 0
+  name occ
+  selected true
+  xpos 678
+  ypos -212
+  number 3
+ }
+ Invert {
+  mix {{parent.invAO}}
+  name Invert1
+  xpos 670
+  ypos 21
+ }
+ Input {
+  inputs 0
+  name mask
+  xpos 522
+  ypos -191
+  number 4
+ }
+ Premult {
+  name Premult2
+  xpos 522
+  ypos -141
+ }
+ Dot {
+  name Dot1
+  xpos 556
+  ypos -71
+ }
+ Phong {
+  inputs 0
+  diffuse 1
+  specular 0
+  min_shininess 0
+  max_shininess 20
+  name Phong1
+  xpos 145
+  ypos -298
+ }
+push 0
+ DirectLight {
+  inputs 0
+  translate {0 3.950000048 0}
+  rotate {{parent.pos_Height} {parent.pos_Angle} 0}
+  name RimLight
+  xpos 396
+  ypos -572
+  hide_input true
+ }
+ Scene {
+  name Scene1
+  xpos 396
+  ypos -479
+ }
+ Input {
+  inputs 0
+  name Img
+  xpos -126
+  ypos -74
+  number 1
+ }
+set N472c630 [stack 0]
+ Dot {
+  name Dot2
+  label IMG
+  xpos 603
+  ypos -394
+  hide_input true
+ }
+ Input {
+  inputs 0
+  name Ppass
+  xpos 641
+  ypos -410
+ }
+ Input {
+  inputs 0
+  name Npass
+  xpos 742
+  ypos -394
+  number 2
+ }
+add_layer {Ppass Ppass.red Ppass.green Ppass.blue}
+add_layer {Npass Npass.red Npass.green Npass.blue}
+ ShuffleCopy {
+  inputs 2
+  in rgb
+  in2 rgb
+  red red
+  green green
+  blue blue
+  out Ppass
+  out2 Npass
+  name ShuffleCopy1
+  xpos 693
+  ypos -344
+ }
+ ShuffleCopy {
+  inputs 2
+  red red
+  green green
+  blue blue
+  name ShuffleCopy2
+  xpos 569
+  ypos -298
+ }
+ ReLight {
+  inputs 4
+  use_alpha true
+  normal Npass
+  position Ppass
+  name ReLight1
+  xpos 386
+  ypos -298
+ }
+push $N472c630
+ Merge2 {
+  inputs 2+1
+  operation plus
+  maskChannelMask -rgba.alpha
+  name Merge1
+  xpos 386
+  ypos -74
+ }
+push $N472c630
+ Switch {
+  inputs 2
+  which {{parent.choice i}}
+  name Switch1
+  xpos 386
+  ypos -29
+ }
+set N5aaf4b0 [stack 0]
+ Grade {
+  inputs 1+1
+  white 0
+  maskChannelMask rgba.red
+  name Grade_AO
+  xpos 501
+  ypos 27
+ }
+push $N5aaf4b0
+ Switch {
+  inputs 2
+  which {{parent.useAO}}
+  name Switch_AO
+  xpos 386
+  ypos 82
+ }
+ Premult {
+  name Premult1
+  xpos 386
+  ypos 212
+ }
+ Output {
+  name Output1
+  xpos 386
+  ypos 259
+ }
+end_group

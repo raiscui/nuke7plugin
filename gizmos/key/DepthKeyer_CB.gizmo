@@ -1,0 +1,297 @@
+#! /Applications/Nuke6.2v2/NukeX6.2v2.app/../Nuke6.2v2.app/Contents/MacOS/Nuke6.2v2 -nx
+version 6.2 v2
+Gizmo {
+ help "Pulls a key on zdepth.  The output, is RGBA"
+ tile_color 0xff00ff
+ note_font Verdana
+ mapsize {0.15 0.15}
+ addUserKnob {20 Buehler l DepthKeyer_CB t "pulls a key\non\nzdepth.\nThe output, is RGBA"}
+ addUserKnob {6 UnDepthAlpha l "Unpremult depth by alpha" t "recommended for 3D premulitplied images" +STARTLINE}
+ UnDepthAlpha true
+ addUserKnob {41 in l "      in" t "select channel to shuffle to RGBA" -STARTLINE T Shuffle.in}
+ addUserKnob {26 ""}
+ addUserKnob {4 choice l "select to activate" t "This selects which controls are activated." M {"single direction" "two directions" ""}}
+ addUserKnob {6 pDepth l "preview depth" +STARTLINE}
+ addUserKnob {20 oneD l "1 direction controls" t "These controls are activated by selecting single direction." n 1}
+ addUserKnob {19 bV l "black value" t "whatever value you enter here will become black, whether it's higher or lower then the white value." R 0 10}
+ bV 0.2
+ addUserKnob {19 wV l "white value" t "whatever value you enter here will become white, whether it's higher or lower then the black value." R 0 10}
+ wV 0.5
+ addUserKnob {19 onef l feather t "0 is no falloff and 1 is the natural falloff" R 0 2}
+ onef 1
+ addUserKnob {20 endGroup_1 l endGroup n -1}
+ addUserKnob {20 twoD l "2 directions controls" t "These controls are activated by selecting two directions." n 1}
+ twoD 0
+ addUserKnob {41 closest l "depth pass" T Expression.closest}
+ addUserKnob {19 black2 l "close black adjust" t "whatever value you enter here will become black." R -1 1}
+ black2 0.3
+ addUserKnob {19 f2 l "close feather adjust" t "gamma\n0 is no falloff and 1 is the natural falloff" R 0 5}
+ f2 1
+ addUserKnob {26 ""}
+ addUserKnob {19 wCv l "White Center Value" t "whatever value you enter here will become white." R 0 100}
+ wCv 0.6
+ addUserKnob {19 wR l "White Range" t "Gamma\n0 is no falloff and 1 is the natural falloff" R 0 10}
+ wR 0.1
+ addUserKnob {26 ""}
+ addUserKnob {19 black1 l "far black adjust" t "whatever value you enter here will become black." R -1 1}
+ black1 0.3
+ addUserKnob {19 f1 l "far feather adjust" t "gamma\n0 is no falloff and 1 is the natural falloff" R 0 5}
+ f1 1
+ addUserKnob {20 endGroup n -1}
+ addUserKnob {26 "" +STARTLINE}
+ addUserKnob {6 gD l "Grow Depth" t "When activated this allows you to expand the depth." +STARTLINE}
+ addUserKnob {41 size l "          Amount" t "the amount it will grow the edges" -STARTLINE T Dilate1.size}
+ addUserKnob {41 edgeMult t "cc grown edges" T MergeExpression4.edgeMult}
+ addUserKnob {26 ""}
+ addUserKnob {6 kUnpreE l "kill Unpremult edge" t "when Unpremult depth by alpha, this removes the unwanted bright edge (in progress)" +STARTLINE}
+ addUserKnob {6 pR l "premult result" -STARTLINE}
+ addUserKnob {6 mFilter l "median filter" t "applied before key" -STARTLINE}
+ addUserKnob {6 keep0 l "keep 0" t "Anything that is the value of zero, will remain zero" +STARTLINE}
+ keep0 true
+ addUserKnob {6 iRes l "invert result" +STARTLINE}
+ addUserKnob {6 cRes l "clamp result" -STARTLINE}
+ cRes true
+ addUserKnob {26 ""}
+ addUserKnob {32 bugs l " comments / bugs " t "click here to download the latest version, leave a comment/request or a bug." T "start http://www.nukepedia.com/index.php?searchword=Buehler&ordering=&searchphrase=all&option=com_search" +STARTLINE}
+ addUserKnob {26 version l "" -STARTLINE T "                      - by Chad Buehler    v1.2"}
+}
+ Input {
+  inputs 0
+  name Input1
+  xpos -197
+  ypos -352
+ }
+ Unpremult {
+  channels all
+  name Unpremult1
+  xpos -197
+  ypos -309
+  disable {{!UnDepthAlpha i x75 1}}
+ }
+set N20e15080 [stack 0]
+ Shuffle {
+  in depth
+  in2 rgba
+  black alpha2
+  out2 mask
+  name Shuffle
+  xpos -197
+  ypos -250
+ }
+set N20e19180 [stack 0]
+ Dot {
+  name Dot1
+  xpos -241
+  ypos 374
+ }
+set N20e22230 [stack 0]
+push $N20e22230
+push $N20e15080
+ Shuffle {
+  in2 none
+  red alpha
+  green alpha
+  blue alpha
+  out2 none
+  name Shuffle1
+  xpos -32
+  ypos -200
+ }
+ Invert {
+  channels rgba
+  name Invert1
+  xpos -32
+  ypos 135
+ }
+set N20e2dbe0 [stack 0]
+ Grade {
+  channels alpha
+  whitepoint 0.01
+  white_clamp true
+  name Grade2
+  xpos -32
+  ypos 163
+ }
+push $N20e2dbe0
+push $N20e19180
+ Median {
+  channels rgba
+  size 2
+  name Median2
+  xpos -197
+  ypos -195
+  disable {{!mFilter i}}
+ }
+set N20e3b960 [stack 0]
+ Dilate {
+  channels rgba
+  size 2
+  name Dilate1
+  xpos -136
+  ypos -150
+  disable {{!parent.gD}}
+ }
+push $N20e3b960
+ MergeExpression {
+  inputs 2
+  expr0 "Br < 0.99 ? max(Br,Ar*edgeMult.r) : Br"
+  expr1 "Bg < 0.99 ? max(Bg,Ag*edgeMult.g) : Bg"
+  expr2 "Bb < 0.99 ? max(Bb,Ab*edgeMult.b) : Bb"
+  name MergeExpression4
+  xpos -197
+  ypos -107
+  disable {{!parent.gD}}
+  addUserKnob {20 Buehler l User}
+  addUserKnob {18 edgeMult t "cc grown edges" R 0.95 1}
+  edgeMult 1
+ }
+set N505e27e0 [stack 0]
+ Expression {
+  expr0 max(r,g,b,a)>=Expression.pivPt?1:0
+  expr1 max(r,g,b,a)>=Expression.pivPt?1:0
+  expr2 max(r,g,b,a)>=Expression.pivPt?1:0
+  expr3 max(r,g,b,a)>=Expression.pivPt?1:0
+  name Expression1
+  xpos -313
+  ypos -8
+  disable {{!choice i}}
+ }
+push $N505e27e0
+ Expression {
+  expr0 r>=pivPt?r-range:(-(r-pivPt))+pivPt-range
+  expr1 g>=pivPt?g-range:(-(g-pivPt))+pivPt-range
+  expr2 b>=pivPt?b-range:(-(b-pivPt))+pivPt-range
+  expr3 a>=pivPt?a-range:(-(a-pivPt))+pivPt-range
+  name Expression
+  xpos -197
+  ypos -54
+  disable {{!choice}}
+  addUserKnob {20 Buehler}
+  addUserKnob {7 pivPt l "pivot point" R 0 100}
+  pivPt {{wCv}}
+  addUserKnob {7 range R 0 10}
+  range {{wR}}
+  addUserKnob {4 closest l "depth pass" M {"white is closer" "black is closer"}}
+  closest "black is closer"
+ }
+set N20e48f80 [stack 0]
+push $N20e48f80
+ Grade {
+  channels rgba
+  blackpoint {{Expression.closest==1?black2+whitepoint>whitepoint+0.00001?black2+whitepoint:black2+whitepoint+0.00001:choice==1?black1+whitepoint>whitepoint+0.00001?black1+whitepoint:black1+whitepoint+0.00001:bV i}}
+  whitepoint {{Expression.pivPt i}}
+  gamma {{Expression.closest==1?f2:choice==1?f1:onef i}}
+  black_clamp false
+  name Grade1
+  xpos -197
+  ypos -9
+  disable {{!choice i}}
+ }
+ MergeExpression {
+  inputs 2
+  expr0 "Ar == 0 ? 0 : Br"
+  expr1 "Ag == 0 ? 0 : Bg"
+  expr2 "Ab == 0 ? 0 : Bb"
+  expr3 "Aa == 0 ? 0 : Ba"
+  name MergeExpression2
+  xpos -197
+  ypos 45
+  disable {{!keep0 i}}
+ }
+push $N20e48f80
+push $N20e48f80
+ Grade {
+  channels rgba
+  blackpoint {{choice==1?Expression.closest==1?black1+whitepoint>whitepoint+0.00001?black1+whitepoint:black1+whitepoint+0.00001:black2+whitepoint>whitepoint+0.00001?black2+whitepoint:black2+whitepoint+0.00001:bV}}
+  whitepoint {{choice==1?Expression.pivPt:wV}}
+  gamma {{choice==1?Expression.closest==1?f1:f2:onef}}
+  black_clamp false
+  name Grade
+  xpos -103
+  ypos -12
+ }
+ MergeExpression {
+  inputs 2
+  expr0 "Ar == 0 ? 0 : Br"
+  expr1 "Ag == 0 ? 0 : Bg"
+  expr2 "Ab == 0 ? 0 : Bb"
+  expr3 "Aa == 0 ? 0 : Ba"
+  name MergeExpression1
+  xpos -103
+  ypos 45
+  disable {{!keep0 i}}
+ }
+ Keymix {
+  inputs 3
+  channels rgba
+  invertMask true
+  bbox B
+  name Keymix
+  xpos -197
+  ypos 100
+  disable {{!choice i}}
+ }
+ Merge2 {
+  inputs 2
+  operation stencil
+  name Merge1
+  xpos -197
+  ypos 184
+  disable {{!kUnpreE i}}
+ }
+ Median {
+  inputs 1+1
+  channels rgba
+  size 6
+  name Median1
+  xpos -197
+  ypos 212
+  disable {{!kUnpreE i}}
+ }
+ Clamp {
+  channels rgba
+  name Clamp
+  xpos -197
+  ypos 248
+  disable {{!cRes i}}
+ }
+ Premult {
+  alpha mask.a
+  name Premult1
+  xpos -197
+  ypos 283
+  disable {{!pR i}}
+ }
+ Invert {
+  channels rgba
+  maskChannelMask none
+  name Invert
+  xpos -197
+  ypos 337
+  disable {{"iRes ==1  && keep0 == 0 ? 0 : 1"}}
+ }
+ MergeExpression {
+  inputs 2
+  expr0 "Ar == 0 ? 0 : 1-Br"
+  expr1 "Ag == 0 ? 0 : 1-Bg"
+  expr2 "Ab == 0 ? 0 : 1-Bb"
+  expr3 "Aa == 0 ? 0 : 1-Ba"
+  name MergeExpression3
+  xpos -197
+  ypos 382
+  disable {{"iRes ==1  && keep0 == 1 ? 0 : 1" i}}
+ }
+ Switch {
+  inputs 2
+  which {{pDepth i}}
+  name Switch1
+  xpos -200
+  ypos 443
+  disable {{"!\$gui" i}}
+ }
+ Output {
+  name Output1
+  xpos -200
+  ypos 507
+ }
+end_group

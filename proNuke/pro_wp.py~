@@ -1,0 +1,111 @@
+#!/usr/bin/env python
+# -*- coding: UTF-8 -*- 
+# Author:  rais --<cgengine>
+# Purpose: wp,---- Prometeus NUKE class
+# Created: 2012/9/20
+import sys, os.path
+import nuke
+
+from PyQt4 import QtCore, QtGui, uic
+
+
+
+debug = 0
+
+
+pro_wp_setSE_form, pro_wp_setSE_base = uic.loadUiType(os.path.join(os.path.dirname(__file__),'pro_wp_setSE.ui' ))
+########################################################################
+class proNF3pnode(object):
+	u"""三屏节点设置工场"""
+
+	#----------------------------------------------------------------------
+	def __init__(self, objs = None):
+		u"""Constructor"""
+		self.objs =  None
+		if debug:print objs, 'proNF3P init'
+		if objs:self.setobjs(objs)
+		
+	def setobjs(self, objs):
+		self.objs =  objs
+	def getobjs (self):
+		return self.objs
+		
+	def setStartEnd(self, ss,ee):
+		sns =  self.getobjs()
+		if debug:print sns, 'setStartEnd'
+		for sn in sns:
+			try:
+				f = sn.node('Read39').knob('first')
+				#fv =nuke.toNode('root').knob('s').value()
+				fv = ss
+				f.setValue(int(fv))
+				#f.setExpression(fv)
+	
+				s = sn.node('Read39').knob('last')
+				#sv =nuke.toNode('root').knob('e').value()
+				sv = ee
+				s.setValue(int(sv))
+				#s.setExpression(sv)
+	
+				of = sn.node('Read39').knob('origfirst')
+				ofv =ss
+				of.setValue(int(ofv))
+	
+				os = sn.node('Read39').knob('origlast')
+				osv =ee
+				os.setValue(int(osv))
+	
+			except:
+				pass
+		for sn in sns:
+			try:
+				sn.node('Read39').knob('after').setValue(3)
+				sn.node('Read39').knob('before').setValue(3)
+			except:
+				pass
+
+
+class cSetSEFrameUI(pro_wp_setSE_form, pro_wp_setSE_base, object):
+	def __init__(self, parent=None):
+		super(cSetSEFrameUI, self).__init__(parent)
+		self.setupUi(self)
+
+
+class cSetSEFrame(object):
+	def __init__(self, parent =None):
+		super(cSetSEFrame, self).__init__()
+		self.parent = parent
+		self.ui = cSetSEFrameUI(self.parent)
+		self.sns =  None
+		
+		
+		#self.ui.setQPB.clicked.connect(self.set)
+		self.ui.accepted.connect(self.set)
+		#self.ui.finished.connect(self.q)#貌似是 -关闭- 这个命令执行之前
+		self.ui.rejected.connect(self.q)
+		
+		self.sns =  nuke.selectedNodes()
+		self.ui.show()
+
+	#def showUI(self):
+		#self.sns =  nuke.selectedNodes()
+		#if debug:print self.sns, 'showUI'
+		#self.ui.show()
+		
+	
+	def set(self):
+		worker =  proNF3pnode(self.sns)
+		worker.setStartEnd(self.ui.sQSB.value(), self.ui.eQSB.value())
+
+
+	def q(self):
+		self.sns = None
+		print 'qqqqq'
+
+
+
+def setSE():
+	global proObj
+	proObj =  cSetSEFrame()
+	
+

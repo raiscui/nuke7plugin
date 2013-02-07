@@ -1,0 +1,151 @@
+Group {
+ name PxF_Grain
+ inputs 2
+ addUserKnob {20 User}
+ addUserKnob {26 "" l "@b;Size"}
+ addUserKnob {41 red_size l red T Grain2_3.red_size}
+ addUserKnob {41 green_size l green T Grain2_3.green_size}
+ addUserKnob {41 blue_size l blue T Grain2_3.blue_size}
+ addUserKnob {26 "" l "@b;Irregularity"}
+ addUserKnob {41 red_i l red T Grain2_3.red_i}
+ addUserKnob {41 green_i l green T Grain2_3.green_i}
+ addUserKnob {41 blue_i l blue T Grain2_3.blue_i}
+ addUserKnob {26 "" l "@b;Intensity"}
+ addUserKnob {41 red_m l red T Grain2_3.red_m}
+ addUserKnob {41 green_m l green T Grain2_3.green_m}
+ addUserKnob {41 blue_m l blue T Grain2_3.blue_m}
+ addUserKnob {26 r l "@b;Response"}
+ addUserKnob {6 v_cinSpace l "Cineon Colorspace" +STARTLINE}
+ v_cinSpace true
+ addUserKnob {41 lut l "" +STARTLINE T ColorLookup1.lut}
+ addUserKnob {26 ""}
+ addUserKnob {26 t l "" +STARTLINE T "PxF_Grain 1.0.1 - (c) 2012 - Xavier Bourque - www.pixelfudger.com"}
+}
+ Input {
+  inputs 0
+  name mask
+  xpos -142
+  ypos 625
+  number 1
+ }
+ Dot {
+  name Dot2
+  xpos -108
+  ypos 1087
+ }
+ Input {
+  inputs 0
+  name img
+  xpos -329
+  ypos 474
+ }
+set Nf056e50 [stack 0]
+ Dot {
+  name Dot3
+  xpos -186
+  ypos 631
+ }
+ Dot {
+  name Dot1
+  xpos -186
+  ypos 985
+ }
+push $Nf056e50
+ Grade {
+  white 0
+  add 0.5
+  name Grade1
+  label "make grey frame"
+  xpos -526
+  ypos 595
+ }
+ Grain2 {
+  name Grain2_3
+  label "Kodak 5217"
+  xpos -526
+  ypos 672
+  seed {{random(frame*random(frame+123))*100000 i}}
+  black {0 0 0}
+  minimum {0 0 0}
+  maskgrain false
+ }
+ Add {
+  value -0.5
+  name Add1
+  xpos -526
+  ypos 753
+ }
+push $Nf056e50
+ Colorspace {
+  colorspace_out Cineon
+  name Colorspace6
+  xpos -329
+  ypos 658
+  disable {{parent.v_cinSpace?0:1 i}}
+ }
+set N10b49180 [stack 0]
+ ColorLookup {
+  lut {master {}
+    red {curve 1 1}
+    green {curve 1 1}
+    blue {curve 1 1}
+    alpha {}}
+  name ColorLookup1
+  xpos -407
+  ypos 716
+ }
+ Clamp {
+  maximum 13
+  MaxClampTo 13
+  name Clamp1
+  xpos -407
+  ypos 756
+ }
+ Merge2 {
+  inputs 2
+  operation multiply
+  name Merge26
+  xpos -407
+  ypos 831
+ }
+push $N10b49180
+ Merge2 {
+  inputs 2
+  operation plus
+  Achannels rgb
+  Bchannels rgb
+  output rgb
+  name Merge27
+  xpos -333
+  ypos 934
+ }
+ Colorspace {
+  colorspace_in Cineon
+  name Colorspace5
+  xpos -333
+  ypos 1011
+  disable {{parent.v_cinSpace?0:1 i}}
+ }
+set Nb333a30 [stack 0]
+ Keymix {
+  inputs 3
+  invertMask true
+  bbox B
+  name Keymix1
+  xpos -333
+  ypos 1088
+  disable {{"\[exists parent.input1] ? 0 : 1" i x1 0}}
+ }
+ Output {
+  name Output1
+  xpos -333
+  ypos 1164
+ }
+push $Nb333a30
+ Viewer {
+  input_process false
+  name Viewer1
+  xpos -464
+  ypos 1104
+ }
+end_group

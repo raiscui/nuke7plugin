@@ -1,0 +1,125 @@
+#! D:/Program Files/Nuke6.3v4/Nuke6.3.exe -nx
+version 6.3 v4
+Gizmo {
+ help "Individualy mix the R,G and B channels of the input image into the alpha of the output, while replacing the original RGB with a user defined constant color\n\nArtWare Corp 2010"
+ addUserKnob {20 RGBToAlpha l "RGB To Alpha"}
+ addUserKnob {41 mixRed l red t "How much from the Red  channel will be mixed in the alpha \n\n0 is none, 1 is full\n\n" T CopyRed.mix}
+ addUserKnob {41 mixGreen l green t "How much from the Green channel will be mixed in the alpha \n\n0 is none, 1 is full\n\n" T CopyGreen.mix}
+ addUserKnob {41 mixBlue l blue t "How much from the Blue  channel will be mixed in the alpha \n\n0 is none, 1 is full\n\n" T CopyBlue.mix}
+ addUserKnob {6 invert +STARTLINE}
+ addUserKnob {26 ""}
+ addUserKnob {6 erodeToggle l "erode On/Off" t "switch the erode and blur on and off" +STARTLINE}
+ addUserKnob {41 erodeSize l size t "Shrink B/W mask by this amount" T Erode1.size}
+ addUserKnob {41 blurSize l blur t "add a blur to the resulting alpha" T Blur1.size}
+ addUserKnob {41 filter T Blur1.filter}
+ addUserKnob {41 quality l "" -STARTLINE T Blur1.quality}
+ addUserKnob {26 ""}
+ addUserKnob {41 color l Color t "Set the constant color that will replace the original RGB, this is for viewing purposes and should not affect the function of the node which operates on the alpha channel\n\n" T Ramp1.color}
+}
+ Input {
+  inputs 0
+  name Img
+  xpos 166
+  ypos -292
+ }
+set N1a763dc0 [stack 0]
+push $N1a763dc0
+add_layer {rgba rgba.beta}
+ Ramp {
+  output rgb
+  replace true
+  p0 {80 -100}
+  p1 {80 -35}
+  color 0
+  name Ramp1
+  xpos 313
+  ypos -237
+ }
+ Copy {
+  inputs 2
+  from0 rgba.red
+  to0 rgba.alpha
+  name CopyRed
+  xpos 313
+  ypos -147
+ }
+push $N1a763dc0
+push $N1a763dc0
+ Ramp {
+  output rgb
+  replace true
+  p0 {80 -100}
+  p1 {80 -35}
+  color {{parent.Ramp1.color x1 0} {parent.Ramp1.color x1 0} {parent.Ramp1.color x1 0} {parent.Ramp1.color x1 0.00800000038}}
+  name Ramp2
+  xpos 406
+  ypos -237
+ }
+ Copy {
+  inputs 2
+  from0 rgba.green
+  to0 rgba.alpha
+  name CopyGreen
+  xpos 406
+  ypos -146
+ }
+ Merge2 {
+  inputs 2
+  output {rgba.red rgba.green rgba.blue rgba.alpha}
+  name Merge2
+  xpos 313
+  ypos -96
+ }
+push $N1a763dc0
+push $N1a763dc0
+ Ramp {
+  output rgb
+  replace true
+  p0 {80 -100}
+  p1 {80 -35}
+  color {{parent.Ramp1.color} {parent.Ramp1.color} {parent.Ramp1.color} {parent.Ramp1.color}}
+  name Ramp3
+  xpos 504
+  ypos -238
+ }
+ Copy {
+  inputs 2
+  from0 rgba.blue
+  to0 rgba.alpha
+  name CopyBlue
+  xpos 504
+  ypos -148
+ }
+ Merge2 {
+  inputs 2
+  output {rgba.red rgba.green rgba.blue rgba.alpha}
+  name Merge3
+  xpos 313
+  ypos -70
+ }
+ Erode {
+  mix {{parent.erodeToggle}}
+  name Erode1
+  xpos 313
+  ypos -34
+ }
+ Blur {
+  channels alpha
+  size 1
+  mix {{parent.erodeToggle}}
+  name Blur1
+  xpos 313
+  ypos 4
+ }
+ Invert {
+  mix {{parent.invert}}
+  name Invert1
+  xpos 313
+  ypos 49
+ }
+ Output {
+  name Output1
+  xpos 313
+  ypos 102
+ }
+end_group

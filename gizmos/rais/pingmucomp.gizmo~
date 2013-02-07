@@ -1,0 +1,289 @@
+#! /home/rais/Nuke7.0v2/Nuke7.0 -nx
+version 7.0 v2
+Gizmo {
+ inputs 0
+ label master
+ note_font Verdana
+ postage_stamp true
+ mapsize {0.15 0.15}
+ addUserKnob {20 User}
+ addUserKnob {1 rootp l 根路径}
+ rootp pp
+ addUserKnob {1 c1 l 左相机}
+ c1 stereoCamera%V1
+ addUserKnob {1 c2 l 中相机}
+ c2 stereoCamera%V
+ addUserKnob {1 c3 l 右相机}
+ c3 stereoCamera%V2
+ addUserKnob {6 path_cam l 路径包含相机文件夹 +STARTLINE}
+ path_cam true
+ addUserKnob {6 name_cam l 文件名包含相机 -STARTLINE}
+ name_cam true
+ addUserKnob {1 pass}
+ pass diffuse
+ addUserKnob {6 havepassdir l 路径包含PASS文件夹 +STARTLINE}
+ havepassdir true
+ addUserKnob {6 havenamepass l 文件名包含PASS -STARTLINE}
+ havenamepass true
+ addUserKnob {1 fname l 文件名}
+ fname cj2_
+ addUserKnob {1 ext l 后缀}
+ ext .%04d.exr
+ addUserKnob {26 ""}
+ addUserKnob {26 ccc l 左右边修整}
+ addUserKnob {41 reformat l 重格式化 T Group17.reformat}
+ addUserKnob {41 disable_1 l 禁用 T Group17.disable_1}
+ addUserKnob {26 ""}
+ addUserKnob {26 to_2lou l 2楼比例裁剪}
+ addUserKnob {41 reformat_1 l 重格式化 T Group17.reformat_1}
+ addUserKnob {41 disable_2 l 禁用 T Group17.disable_2}
+ addUserKnob {26 ""}
+ addUserKnob {41 disable_3 l 禁用二楼格式化 T Group17.disable_3}
+ addUserKnob {26 halfsize l 半分辨率}
+ addUserKnob {41 isfull l 是全画幅 T Group17.isfull}
+ addUserKnob {26 endpix l 最终宽}
+ addUserKnob {41 box_width l width/height T Group17.box_width}
+ addUserKnob {20 l l 左屏}
+ addUserKnob {41 file T Read1.file}
+ addUserKnob {41 cacheLocal l "cache locally" T Read1.cacheLocal}
+ addUserKnob {41 format T Read1.format}
+ addUserKnob {41 proxy T Read1.proxy}
+ addUserKnob {41 proxy_format l "proxy format" T Read1.proxy_format}
+ addUserKnob {41 first l "frame range" T Read1.first}
+ addUserKnob {41 before l "" -STARTLINE T Read1.before}
+ addUserKnob {41 last l "" -STARTLINE T Read1.last}
+ addUserKnob {41 after l "" -STARTLINE T Read1.after}
+ addUserKnob {41 frame_mode l frame T Read1.frame_mode}
+ addUserKnob {41 frame l "" -STARTLINE T Read1.frame}
+ addUserKnob {41 origfirst l "original range" T Read1.origfirst}
+ addUserKnob {41 origlast l "" -STARTLINE T Read1.origlast}
+ addUserKnob {41 origset l "original range set" T Read1.origset}
+ addUserKnob {41 on_error l "missing frames" T Read1.on_error}
+ addUserKnob {41 reload T Read1.reload}
+ addUserKnob {41 colorspace T Read1.colorspace}
+ addUserKnob {41 premultiplied T Read1.premultiplied}
+ addUserKnob {41 raw l "raw data" T Read1.raw}
+ addUserKnob {41 auto_alpha l "auto alpha" T Read1.auto_alpha}
+ addUserKnob {26 "" l "exr Options"}
+ addUserKnob {20 m l 中屏}
+ addUserKnob {41 file_1 l file T Read39.file}
+ addUserKnob {41 cacheLocal_1 l "cache locally" T Read39.cacheLocal}
+ addUserKnob {41 format_1 l format T Read39.format}
+ addUserKnob {41 proxy_1 l proxy T Read39.proxy}
+ addUserKnob {41 proxy_format_1 l "proxy format" T Read39.proxy_format}
+ addUserKnob {41 first_1 l "frame range" T Read39.first}
+ addUserKnob {41 before_1 l "" -STARTLINE T Read39.before}
+ addUserKnob {41 last_1 l "" -STARTLINE T Read39.last}
+ addUserKnob {41 after_1 l "" -STARTLINE T Read39.after}
+ addUserKnob {41 frame_mode_1 l frame T Read39.frame_mode}
+ addUserKnob {41 frame_1 l "" -STARTLINE T Read39.frame}
+ addUserKnob {41 origfirst_1 l "original range" T Read39.origfirst}
+ addUserKnob {41 origlast_1 l "" -STARTLINE T Read39.origlast}
+ addUserKnob {41 origset_1 l "original range set" T Read39.origset}
+ addUserKnob {41 on_error_1 l "missing frames" T Read39.on_error}
+ addUserKnob {41 reload_1 l reload T Read39.reload}
+ addUserKnob {41 colorspace_1 l colorspace T Read39.colorspace}
+ addUserKnob {41 premultiplied_1 l premultiplied T Read39.premultiplied}
+ addUserKnob {41 raw_1 l "raw data" T Read39.raw}
+ addUserKnob {41 auto_alpha_1 l "auto alpha" T Read39.auto_alpha}
+ addUserKnob {26 "" l "exr Options"}
+ addUserKnob {20 r l 右屏}
+ addUserKnob {41 file_2 l file T Read3.file}
+ addUserKnob {41 cacheLocal_2 l "cache locally" T Read3.cacheLocal}
+ addUserKnob {41 format_2 l format T Read3.format}
+ addUserKnob {41 proxy_2 l proxy T Read3.proxy}
+ addUserKnob {41 proxy_format_2 l "proxy format" T Read3.proxy_format}
+ addUserKnob {41 first_2 l "frame range" T Read3.first}
+ addUserKnob {41 before_2 l "" -STARTLINE T Read3.before}
+ addUserKnob {41 last_2 l "" -STARTLINE T Read3.last}
+ addUserKnob {41 after_2 l "" -STARTLINE T Read3.after}
+ addUserKnob {41 frame_mode_2 l frame T Read3.frame_mode}
+ addUserKnob {41 frame_2 l "" -STARTLINE T Read3.frame}
+ addUserKnob {41 origfirst_2 l "original range" T Read3.origfirst}
+ addUserKnob {41 origlast_2 l "" -STARTLINE T Read3.origlast}
+ addUserKnob {41 origset_2 l "original range set" T Read3.origset}
+ addUserKnob {41 on_error_2 l "missing frames" T Read3.on_error}
+ addUserKnob {41 reload_2 l reload T Read3.reload}
+ addUserKnob {41 colorspace_2 l colorspace T Read3.colorspace}
+ addUserKnob {41 premultiplied_2 l premultiplied T Read3.premultiplied}
+ addUserKnob {41 raw_2 l "raw data" T Read3.raw}
+ addUserKnob {41 auto_alpha_2 l "auto alpha" T Read3.auto_alpha}
+ addUserKnob {26 "" l "exr Options"}
+}
+ Read {
+  inputs 0
+  file "\[knob \[knob parent.rootp].label]/\[python \{nuke.thisParent().knob('c3').value()+'/' if nuke.thisParent().knob('path_cam').value() else ''\}]\[python \{nuke.thisParent().knob('pass').value()+'/' if nuke.thisParent().knob('havepassdir').value() and nuke.thisParent().knob('pass').value() != '' else ''\}]\[knob parent.fname]\[python \{nuke.thisParent().knob('c3').value() if nuke.thisParent().knob('name_cam').value() else ''\}]\[python \{'.'+nuke.thisParent().knob('pass').value() if nuke.thisParent().knob('havenamepass').value() and nuke.thisParent().knob('pass').value() != '' else ''\}]\[knob parent.ext]"
+  cacheLocal always
+  first {{parent.Read39.first}}
+  before black
+  last {{parent.Read39.last}}
+  after black
+  origfirst {{parent.Read39.origfirst}}
+  origlast {{parent.Read39.origlast}}
+  origset true
+  premultiplied {{parent.Read39.premultiplied.left}}
+  raw {{parent.Read39.raw.left}}
+  auto_alpha {{parent.Read39.auto_alpha.left}}
+  name Read3
+  xpos 290
+  ypos -279
+ }
+ Read {
+  inputs 0
+  file "\[knob \[knob parent.rootp].label]/\[python \{nuke.thisParent().knob('c2').value()+'/' if nuke.thisParent().knob('path_cam').value() else ''\}]\[python \{nuke.thisParent().knob('pass').value()+'/' if nuke.thisParent().knob('havepassdir').value() and nuke.thisParent().knob('pass').value() != '' else ''\}]\[knob parent.fname]\[python \{nuke.thisParent().knob('c2').value() if nuke.thisParent().knob('name_cam').value() else ''\}]\[python \{'.'+nuke.thisParent().knob('pass').value() if nuke.thisParent().knob('havenamepass').value() and nuke.thisParent().knob('pass').value() != '' else ''\}]\[knob parent.ext]"
+  cacheLocal always
+  before black
+  last 1000
+  after black
+  origlast 1000
+  origset true
+  name Read39
+  xpos 180
+  ypos -279
+ }
+set Ncf6a010 [stack 0]
+ Read {
+  inputs 0
+  file "\[knob \[knob parent.rootp].label]/\[python \{nuke.thisParent().knob('c1').value()+'/' if nuke.thisParent().knob('path_cam').value() else ''\}]\[python \{nuke.thisParent().knob('pass').value()+'/' if nuke.thisParent().knob('havepassdir').value() and nuke.thisParent().knob('pass').value() != '' else ''\}]\[knob parent.fname]\[python \{nuke.thisParent().knob('c1').value() if nuke.thisParent().knob('name_cam').value() else ''\}]\[python \{'.'+nuke.thisParent().knob('pass').value() if nuke.thisParent().knob('havenamepass').value() and nuke.thisParent().knob('pass').value() != '' else ''\}]\[knob parent.ext]"
+  cacheLocal always
+  first {{parent.Read39.first}}
+  before black
+  last {{parent.Read39.last}}
+  after black
+  origfirst {{parent.Read39.origfirst}}
+  origlast {{parent.Read39.origlast}}
+  origset true
+  premultiplied {{parent.Read39.premultiplied.left}}
+  raw {{parent.Read39.raw.left}}
+  auto_alpha {{parent.Read39.auto_alpha.left}}
+  name Read1
+  selected true
+  xpos 70
+  ypos -279
+ }
+ Group {
+  inputs 3
+  name Group17
+  label 范本
+  note_font "Verdana Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold"
+  note_font_size 22
+  note_font_color 0xff0000ff
+  xpos 180
+  ypos -100
+  addUserKnob {20 User}
+  addUserKnob {20 endGroup n -1}
+  addUserKnob {26 ccc l 左右边修整}
+  addUserKnob {41 reformat l 重格式化 T Crop1.reformat}
+  addUserKnob {41 disable_1 l 禁用 -STARTLINE T Crop1.disable}
+  addUserKnob {26 ""}
+  addUserKnob {26 to_2lou l 2楼比例裁剪}
+  addUserKnob {41 reformat_1 l 重格式化 T Crop3.reformat}
+  addUserKnob {41 disable_2 l 禁用 -STARTLINE T Crop3.disable}
+  addUserKnob {26 ""}
+  addUserKnob {41 disable_3 l "禁用二楼格式化 1920 x 600" T Reformat5.disable}
+  addUserKnob {26 ""}
+  addUserKnob {26 halfsize l 半分辨率}
+  addUserKnob {6 isfull l 是全画幅 -STARTLINE}
+  isfull true
+  addUserKnob {26 endpix l 最终宽}
+  addUserKnob {41 box_width l width/height T Reformat5.box_width}
+ }
+  Input {
+   inputs 0
+   name Input3
+   xpos -480
+   ypos 111
+   number 2
+  }
+  Transform {
+   translate {{-Transform1.translate.x x915 56} 0}
+   center {930 640}
+   filter Impulse
+   name Transform2
+   xpos -480
+   ypos 207
+  }
+  Input {
+   inputs 0
+   name Input2
+   xpos -608
+   ypos 111
+   number 1
+  }
+  Input {
+   inputs 0
+   name Input1
+   xpos -745
+   ypos 114
+  }
+  Transform {
+   translate {{28*(parent.parent.isfull+1) i} 0}
+   center {930 640}
+   filter Impulse
+   name Transform1
+   xpos -745
+   ypos 207
+  }
+  ContactSheet {
+   inputs 3
+   width {{2790*(parent.parent.isfull+1)}}
+   height {{640*(parent.parent.isfull+1)}}
+   rows 1
+   columns 3
+   roworder TopBottom
+   startframe 1
+   endframe 1
+   name ContactSheet1
+   xpos -608
+   ypos 266
+  }
+  Reformat {
+   format "5580 1280 0 0 5580 1280 1 slsj3p"
+   filter Impulse
+   name Reformat1
+   xpos -608
+   ypos 290
+  }
+  Crop {
+   box {56 0 5524 1280}
+   reformat true
+   crop false
+   name Crop1
+   xpos -608
+   ypos 326
+  }
+  Crop {
+   box {1006 100 4462 1180}
+   reformat true
+   crop false
+   name Crop3
+   xpos -608
+   ypos 350
+  }
+  Reformat {
+   type "to box"
+   box_width 1920
+   filter Mitchell
+   name Reformat5
+   xpos -608
+   ypos 374
+  }
+  Output {
+   name Output1
+   xpos -608
+   ypos 414
+  }
+ end_group
+ Output {
+  name Output1
+  xpos 212
+  ypos 26
+ }
+push $Ncf6a010
+ Viewer {
+  input_process false
+  name Viewer1
+  xpos -92
+  ypos -177
+ }
+end_group

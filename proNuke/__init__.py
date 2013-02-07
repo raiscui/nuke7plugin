@@ -1,0 +1,2 @@
+print 'Prometeus NUKE init'
+
