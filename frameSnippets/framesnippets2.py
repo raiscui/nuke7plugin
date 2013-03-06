@@ -1,6 +1,6 @@
 __author__ = 'rais'
 # -*- coding:utf-8 -*-
-debug = 1
+debug = 0
 import nuke
 import os
 
@@ -11,7 +11,7 @@ import PySide.QtGui as QtGui
 #import PyQt4.QtGui as QtGui
 from nukescripts import panels
 import cPickle as pick
-import cjson
+import json
 
 
 class frameSnippetsPanel(QtGui.QWidget):
@@ -64,13 +64,10 @@ class frameSnippetsPanel(QtGui.QWidget):
 		nuke.callbacks.addOnScriptLoad(self.setDBpath, nodeClass='Root')
 
 
-	def dateEncoder(self,d):
-		assert isinstance(d, QtGui.QHBoxLayout) or isinstance(d, QtGui.QWidget) or isinstance(d,QtGui.QPushButton)
-		return 'QtGui'
 
 	def proDataSave(self):
 		pathfile = self.DBpath
-		jn_data = cjson.encode(self.js_data)
+		jn_data = json.dumps(self.js_data)
 
 		f = open(pathfile,'w')
 		f.write(jn_data)
@@ -78,7 +75,7 @@ class frameSnippetsPanel(QtGui.QWidget):
 
 	def proDataLoad(self,pathfile):
 		f = open(pathfile,'r')
-		self.js_data = cjson.decode(f.read())
+		self.js_data = json.loads(f.read())
 		f.close()
 
 
