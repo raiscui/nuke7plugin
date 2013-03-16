@@ -1,5 +1,5 @@
-#! /Applications/Nuke6.2v3/NukeX6.2v3.app/../Nuke6.2v3.app/Contents/MacOS/Nuke6.2v3 -nx
-version 6.2 v3
+#! /home/rais/Nuke7.0v4/Nuke7.0 -nx
+version 7.0 v4
 Gizmo {
  help "V!ctor 1.5v3\nV_IdFilter\n©2011 Victor Perez. All rights reserved\nwww.victorperez.co.uk"
  tile_color 0x9e3c63ff
@@ -7,6 +7,7 @@ Gizmo {
  addUserKnob {20 V_IdFilter}
  addUserKnob {4 operation t "channel mix operation" M {max sum ""}}
  addUserKnob {6 clamp t "clamp values" -STARTLINE}
+ clamp true
  addUserKnob {41 channels l "output matte" T Copy1.channels}
 }
  Input {
@@ -15,13 +16,13 @@ Gizmo {
   xpos -680
   ypos -423
  }
-set N27b205d0 [stack 0]
+set Ne698840 [stack 0]
  Remove {
   name Format0
   xpos -680
   ypos -374
  }
-set N27add780 [stack 0]
+set Ne464c40 [stack 0]
  Dot {
   name Dot4
   xpos -646
@@ -32,36 +33,36 @@ set N27add780 [stack 0]
   xpos -566
   ypos -150
  }
-set N27af48d0 [stack 0]
+set Nffd91e0 [stack 0]
  Dot {
   name Dot9
   xpos -406
   ypos -150
  }
-set N27ae63d0 [stack 0]
+set Nda1e630 [stack 0]
  Dot {
   name Dot8
   xpos -246
   ypos -150
  }
-set N27f16f20 [stack 0]
-push $N27b205d0
+set N12f9cb70 [stack 0]
+push $Ne698840
  Dot {
   name Dot5
   xpos -486
   ypos -420
  }
-push $N27add780
+push $Ne464c40
  Copy {
   inputs 2
-  channels {-rgba.red -rgba.green -rgba.blue -rgba.alpha}
+  channels rgb
   name Copy1
   xpos -520
   ypos -380
  }
  LayerContactSheet {
-  width {{"!\[exists parent.input]==1?root.format.w:parent.input.format.w" i}}
-  height {{"!\[exists parent.input]==1?root.format.h:parent.input.format.h" i}}
+  width {{parent.input.format.w i}}
+  height {{parent.input.format.h i}}
   rows 1
   columns 1
   autodims false
@@ -69,6 +70,7 @@ push $N27add780
   xpos -520
   ypos -315
  }
+set Ne815c50 [stack 0]
  Remove {
   operation keep
   channels rgba
@@ -76,7 +78,6 @@ push $N27add780
   xpos -520
   ypos -279
  }
-add_layer {shadow}
  Shuffle {
   name RefreshRGBA
   xpos -520
@@ -87,19 +88,19 @@ add_layer {shadow}
   xpos -486
   ypos -204
  }
-set N27bf3930 [stack 0]
+set Ne81b630 [stack 0]
  Dot {
   name Dot3
   xpos -326
   ypos -204
  }
-set N27bf1850 [stack 0]
+set Ne8d19b0 [stack 0]
  Dot {
   name Dot2
   xpos -166
   ypos -204
  }
-set N27be2620 [stack 0]
+set Nf6125e0 [stack 0]
  Switch {
   inputs 2
   name BLUEbypass
@@ -115,9 +116,9 @@ set N27be2620 [stack 0]
   xpos -200
   ypos -63
  }
-set N27bdc9f0 [stack 0]
-push $N27ae63d0
-push $N27bf1850
+set N1267d6d0 [stack 0]
+push $Nda1e630
+push $Ne8d19b0
  Switch {
   inputs 2
   name GREENbypass
@@ -133,10 +134,10 @@ push $N27bf1850
   xpos -360
   ypos -63
  }
-set N27bb1b60 [stack 0]
+set Ne6a3b20 [stack 0]
 push 0
-push $N27af48d0
-push $N27bf3930
+push $Nffd91e0
+push $Ne81b630
  Switch {
   inputs 2
   name REDbypass
@@ -152,14 +153,14 @@ push $N27bf3930
   xpos -520
   ypos -63
  }
-set N27b80810 [stack 0]
-push $N27f16f20
+set Ne75a0a0 [stack 0]
+push $N12f9cb70
  Dot {
   name Dot6
   xpos -86
   ypos -150
  }
-push $N27be2620
+push $Nf6125e0
  Dot {
   name Dot1
   xpos -6
@@ -180,7 +181,7 @@ push $N27be2620
   xpos -40
   ypos -63
  }
-set N27b70c40 [stack 0]
+set N11652410 [stack 0]
  Merge2 {
   inputs 4+1
   operation plus
@@ -188,11 +189,11 @@ set N27b70c40 [stack 0]
   xpos -360
   ypos 9
  }
-push $N27bdc9f0
-push $N27bb1b60
+push $N1267d6d0
+push $Ne6a3b20
 push 0
-push $N27b80810
-push $N27b70c40
+push $Ne75a0a0
+push $N11652410
  Merge2 {
   inputs 4+1
   operation max
@@ -204,7 +205,6 @@ push $N27b70c40
   inputs 2
   which {{parent.operation i}}
   name operationSwitch
-  selected true
   xpos -280
   ypos 63
  }
@@ -228,10 +228,11 @@ push $N27b70c40
   xpos -280
   ypos 171
  }
+push $Ne815c50
  Viewer {
   input_process false
   name Viewer1
   xpos -280
-  ypos 238
+  ypos 195
  }
 end_group

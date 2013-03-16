@@ -1,5 +1,5 @@
-#! /Applications/Nuke6.3v4/NukeX6.3v4.app/../Nuke6.3v4.app/Contents/MacOS/Nuke6.3v4 -nx
-version 6.3 v4
+#! D:/Program Files/Nuke7.0v4/Nuke7.0.exe -nx
+version 7.0 v4
 Gizmo {
  tile_color 0x60ba00ff
  note_font Helvetica
@@ -114,7 +114,7 @@ Gizmo {
   xpos 449
   ypos -1528
  }
-set N17079400 [stack 0]
+set N33a23470 [stack 0]
  Shuffle {
   red black
   green black
@@ -131,25 +131,23 @@ set N17079400 [stack 0]
   xpos -281
   ypos -1488
  }
-set N170858c0 [stack 0]
+set N33a23ec0 [stack 0]
  Grain2 {
   name CreatGrain
   label other
   xpos -281
   ypos -1428
-  red_size 0.1
-  green_size 1.6
-  blue_size 1.91
+  red_size 0.23
+  green_size 1.2
+  blue_size 1.4
   green_i 0.86
-  blue_i 0.73
-  red_m 0.145
-  green_m 0.145
-  blue_m 0.15
-  black {0 0 0}
+  red_m 0.48
+  green_m 0.42
+  blue_m 0.57
   minimum {0 0 0}
   maskgrain false
  }
-push $N170858c0
+push $N33a23ec0
  Dot {
   name Dot9
   xpos -368
@@ -168,8 +166,9 @@ push $N170858c0
   xpos -599
   ypos -1428
  }
+set N33a26b70 [stack 0]
  Switch {
-  which {{"\[python -execlocal switch\\ =\\ nuke.thisNode()\\n<br>x\\ =\\ switch\\\['grain_list'\\].values()\\n<br>y\\ =\\ x.index(switch\\\['grain_list'\\].value())\\n<br>ret\\ =\\ y\\n<br>]" i}}
+  which {{"\[python -execlocal switch\\ =\\ nuke.thisNode()\\nx\\ =\\ switch\\\['grain_list'\\].values()\\ny\\ =\\ x.index(switch\\\['grain_list'\\].value())\\nret\\ =\\ y\\n]"}}
   name grain_control
   xpos -760
   ypos -1423
@@ -196,13 +195,13 @@ push $N170858c0
   xpos -726
   ypos -292
  }
-set N17090b10 [stack 0]
+set N33a275c0 [stack 0]
  Dot {
   name Dot24
   xpos -726
   ypos -208
  }
-set N17093720 [stack 0]
+set N33a27930 [stack 0]
  Shuffle {
   green black
   blue black
@@ -212,13 +211,13 @@ set N17093720 [stack 0]
   xpos -664
   ypos -216
  }
-push $N17079400
+push $N33a23470
  Dot {
   name Dot13
   xpos 449
   ypos -445
  }
-set N1709fc80 [stack 0]
+set N33a28010 [stack 0]
  Log2Lin {
   operation lin2log
   name Log2Lin1
@@ -252,13 +251,13 @@ set N1709fc80 [stack 0]
   xpos -336
   ypos -309
  }
-set N170c23d0 [stack 0]
+set N33a294b0 [stack 0]
  Dot {
   name Dot28
   xpos -439
   ypos -309
  }
-set N170c50b0 [stack 0]
+set N33a29820 [stack 0]
  Dot {
   name Dot27
   xpos -533
@@ -280,13 +279,13 @@ set N170c50b0 [stack 0]
   xpos -567
   ypos -209
  }
-push $N17093720
+push $N33a27930
  Dot {
   name Dot25
   xpos -726
   ypos -130
  }
-set N170dd270 [stack 0]
+set N33a2a5e0 [stack 0]
  Shuffle {
   red black
   blue black
@@ -296,7 +295,7 @@ set N170dd270 [stack 0]
   xpos -664
   ypos -138
  }
-push $N170c50b0
+push $N33a29820
  Shuffle {
   red black
   blue black
@@ -313,7 +312,7 @@ push $N170c50b0
   xpos -473
   ypos -133
  }
-push $N170dd270
+push $N33a2a5e0
  Dot {
   name Dot26
   xpos -726
@@ -328,7 +327,7 @@ push $N170dd270
   xpos -664
   ypos -76
  }
-push $N170c23d0
+push $N33a294b0
  Shuffle {
   red black
   green black
@@ -371,7 +370,7 @@ push $N170c23d0
   xpos -726
   ypos 5
  }
-push $N17090b10
+push $N33a275c0
  Dot {
   name Dot19
   xpos -818
@@ -390,6 +389,7 @@ push $N17090b10
   ypos 91
   addUserKnob {20 User}
   addUserKnob {6 switch_luminance l "luminance on/off" +STARTLINE}
+  switch_luminance true
   addUserKnob {41 which_1 l which T SwitchLuminance.which}
  }
  Dot {
@@ -397,26 +397,29 @@ push $N17090b10
   xpos -726
   ypos 210
  }
-set N1553e270 [stack 0]
+set N33a2d600 [stack 0]
  Blur {
   channels {rgba.red -rgba.green -rgba.blue}
+  size 0.2
   name RED_blur
   xpos -760
   ypos 251
  }
  Blur {
   channels {-rgba.red rgba.green -rgba.blue}
+  size 0.2
   name GREEN_blur
   xpos -760
   ypos 285
  }
  Blur {
   channels {-rgba.red -rgba.green rgba.blue}
+  size 0.2
   name BLUE_blur
   xpos -760
   ypos 319
  }
-push $N1553e270
+push $N33a2d600
  Dot {
   name Dot4
   xpos -849
@@ -435,6 +438,7 @@ push $N1553e270
   ypos 376
   addUserKnob {20 User}
   addUserKnob {6 switch_blur l "blur on/off" +STARTLINE}
+  switch_blur true
   addUserKnob {41 which_1 l which T SwitchBlur.which}
  }
  Dot {
@@ -442,32 +446,32 @@ push $N1553e270
   xpos -726
   ypos 462
  }
-set N15561680 [stack 0]
+set N33a2eaa0 [stack 0]
  Sharpen {
   channels {rgba.red -rgba.green -rgba.blue}
-  amount 0
-  size 0
+  amount 0.5
+  size 1.7
   name RED_sharpen
   xpos -760
   ypos 492
  }
  Sharpen {
   channels {-rgba.red rgba.green -rgba.blue}
-  amount 0
-  size 0
+  amount 0.39
+  size 1.1
   name GREEN_sharpen
   xpos -760
   ypos 526
  }
  Sharpen {
   channels {-rgba.red -rgba.green rgba.blue}
-  amount 0
-  size 0
+  amount 0.42
+  size 0.9
   name BLUE_sharpen
   xpos -760
   ypos 560
  }
-push $N15561680
+push $N33a2eaa0
  Dot {
   name Dot8
   xpos -849
@@ -493,7 +497,7 @@ push $N15561680
   xpos -726
   ypos 696
  }
-set N155817b0 [stack 0]
+set N33a2ff40 [stack 0]
  Grade {
   channels {rgba.red -rgba.green -rgba.blue}
   white 0.5
@@ -512,12 +516,13 @@ set N155817b0 [stack 0]
  }
  Grade {
   channels {-rgba.red -rgba.green rgba.blue}
+  white 0.83
   black_clamp false
   name GradeBlue
   xpos -760
   ypos 798
  }
-push $N155817b0
+push $N33a2ff40
  Dot {
   name Dot14
   xpos -849
@@ -536,6 +541,7 @@ push $N155817b0
   ypos 853
   addUserKnob {20 User}
   addUserKnob {6 switch_grade l "grade on/off" +STARTLINE}
+  switch_grade true
   addUserKnob {41 which_1 l which T SwitchGrade.which}
  }
  Dot {
@@ -543,7 +549,7 @@ push $N155817b0
   xpos -726
   ypos 926
  }
-set N155ac290 [stack 0]
+set N33a313e0 [stack 0]
  Clamp {
   channels {rgba.red -rgba.green -rgba.blue}
   minimum_enable false
@@ -571,7 +577,7 @@ set N155ac290 [stack 0]
   xpos -760
   ypos 1026
  }
-push $N155ac290
+push $N33a313e0
  Dot {
   name Dot17
   xpos -849
@@ -597,19 +603,19 @@ push $N155ac290
   xpos -726
   ypos 1336
  }
-set N155d08c0 [stack 0]
+set N33a32880 [stack 0]
  Dot {
   name Dot2
   xpos -726
   ypos 1388
  }
-push $N1709fc80
+push $N33a28010
  NoOp {
   name source
   xpos 404
   ypos 1281
  }
-set N155d6230 [stack 0]
+set N33a32f60 [stack 0]
  Merge2 {
   inputs 2
   operation plus
@@ -623,8 +629,8 @@ set N155d6230 [stack 0]
   xpos 404
   ypos 1433
  }
-push $N155d08c0
-push $N155d6230
+push $N33a32880
+push $N33a32f60
  Log2Lin {
   operation lin2log
   name Log2Lin2
@@ -652,6 +658,7 @@ push $N155d6230
  Dissolve {
   inputs 2
   channels rgba
+  which 0.15
   name Dissolve1
   label Blacks
   xpos 404
@@ -662,8 +669,8 @@ push $N155d6230
   xpos 438
   ypos 1756
  }
-set N1560ae20 [stack 0]
-push $N17079400
+set N33a34ae0 [stack 0]
+push $N33a23470
  Dot {
   name Dot22
   xpos 541
@@ -702,8 +709,8 @@ push $N17079400
   xpos 541
   ypos 1810
  }
-set N1562d5b0 [stack 0]
-push $N1560ae20
+set N33a35f80 [stack 0]
+push $N33a34ae0
  Switch {
   inputs 2
   which {{"\[python nuke.thisNode()\\\['switch_mask'\\].value()]" i}}
@@ -714,8 +721,8 @@ push $N1560ae20
   addUserKnob {6 switch_mask l "mask on/off" +STARTLINE}
   addUserKnob {41 which_1 l which T SwitchMask.which}
  }
-set N15630210 [stack 0]
-push $N1562d5b0
+set N482d82f0 [stack 0]
+push $N33a35f80
  Merge2 {
   inputs 2
   operation minus
@@ -723,7 +730,7 @@ push $N1562d5b0
   xpos 507
   ypos 1887
  }
-push $N15630210
+push $N482d82f0
  Switch {
   inputs 2
   which {{"\[python nuke.thisNode()\\\['switch_preview'\\].value()]" i}}
@@ -734,7 +741,6 @@ push $N15630210
   addUserKnob {6 switch_preview l " view grain " t "Check this box to view only the grain." +STARTLINE}
   addUserKnob {41 which_1 l which T SwitchPreview.which}
  }
-set N1563dc10 [stack 0]
  Crop {
   box {{Input1.bbox.x i} {Input1.bbox.y i} {Input1.bbox.r i} {Input1.bbox.t i}}
   name Crop1
@@ -746,10 +752,11 @@ set N1563dc10 [stack 0]
   xpos 404
   ypos 2123
  }
-push $N1563dc10
+push $N33a26b70
  Viewer {
   input_process false
   name Viewer1
+  selected true
   xpos 214
   ypos 1805
  }

@@ -1,5 +1,5 @@
-#! /home/rais/Nuke7.0v2/Nuke7.0 -nx
-version 7.0 v2
+#! D:/Program Files/Nuke7.0v4/Nuke7.0.exe -nx
+version 7.0 v4
 Gizmo {
  inputs 0
  label master
@@ -113,7 +113,6 @@ Gizmo {
  Read {
   inputs 0
   file "\[knob \[knob parent.rootp].label]/\[python \{nuke.thisParent().knob('c3').value()+'/' if nuke.thisParent().knob('path_cam').value() else ''\}]\[python \{nuke.thisParent().knob('pass').value()+'/' if nuke.thisParent().knob('havepassdir').value() and nuke.thisParent().knob('pass').value() != '' else ''\}]\[knob parent.fname]\[python \{nuke.thisParent().knob('c3').value() if nuke.thisParent().knob('name_cam').value() else ''\}]\[python \{'.'+nuke.thisParent().knob('pass').value() if nuke.thisParent().knob('havenamepass').value() and nuke.thisParent().knob('pass').value() != '' else ''\}]\[knob parent.ext]"
-  cacheLocal always
   first {{parent.Read39.first}}
   before black
   last {{parent.Read39.last}}
@@ -131,7 +130,6 @@ Gizmo {
  Read {
   inputs 0
   file "\[knob \[knob parent.rootp].label]/\[python \{nuke.thisParent().knob('c2').value()+'/' if nuke.thisParent().knob('path_cam').value() else ''\}]\[python \{nuke.thisParent().knob('pass').value()+'/' if nuke.thisParent().knob('havepassdir').value() and nuke.thisParent().knob('pass').value() != '' else ''\}]\[knob parent.fname]\[python \{nuke.thisParent().knob('c2').value() if nuke.thisParent().knob('name_cam').value() else ''\}]\[python \{'.'+nuke.thisParent().knob('pass').value() if nuke.thisParent().knob('havenamepass').value() and nuke.thisParent().knob('pass').value() != '' else ''\}]\[knob parent.ext]"
-  cacheLocal always
   before black
   last 1000
   after black
@@ -141,11 +139,10 @@ Gizmo {
   xpos 180
   ypos -279
  }
-set Ncf6a010 [stack 0]
+set N399698a0 [stack 0]
  Read {
   inputs 0
   file "\[knob \[knob parent.rootp].label]/\[python \{nuke.thisParent().knob('c1').value()+'/' if nuke.thisParent().knob('path_cam').value() else ''\}]\[python \{nuke.thisParent().knob('pass').value()+'/' if nuke.thisParent().knob('havepassdir').value() and nuke.thisParent().knob('pass').value() != '' else ''\}]\[knob parent.fname]\[python \{nuke.thisParent().knob('c1').value() if nuke.thisParent().knob('name_cam').value() else ''\}]\[python \{'.'+nuke.thisParent().knob('pass').value() if nuke.thisParent().knob('havenamepass').value() and nuke.thisParent().knob('pass').value() != '' else ''\}]\[knob parent.ext]"
-  cacheLocal always
   first {{parent.Read39.first}}
   before black
   last {{parent.Read39.last}}
@@ -157,7 +154,6 @@ set Ncf6a010 [stack 0]
   raw {{parent.Read39.raw}}
   auto_alpha {{parent.Read39.auto_alpha}}
   name Read1
-  selected true
   xpos 70
   ypos -279
  }
@@ -165,9 +161,10 @@ set Ncf6a010 [stack 0]
   inputs 3
   name Group17
   label 范本
-  note_font "Verdana Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold"
+  note_font "Verdana Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold"
   note_font_size 22
   note_font_color 0xff0000ff
+  selected true
   xpos 180
   ypos -100
   addUserKnob {20 User}
@@ -196,7 +193,7 @@ set Ncf6a010 [stack 0]
    number 2
   }
   Transform {
-   translate {{-Transform1.translate.x x915 56} 0}
+   translate {{-Transform1.translate.x} 0}
    center {930 640}
    filter Impulse
    name Transform2
@@ -226,8 +223,8 @@ set Ncf6a010 [stack 0]
   }
   ContactSheet {
    inputs 3
-   width {{2790*(parent.parent.isfull+1)}}
-   height {{640*(parent.parent.isfull+1)}}
+   width {{2790*(parent.parent.isfull+1) i}}
+   height {{640*(parent.parent.isfull+1) i}}
    rows 1
    columns 3
    roworder TopBottom
@@ -267,6 +264,7 @@ set Ncf6a010 [stack 0]
    name Reformat5
    xpos -608
    ypos 374
+   disable true
   }
   Output {
    name Output1
@@ -279,7 +277,7 @@ set Ncf6a010 [stack 0]
   xpos 212
   ypos 26
  }
-push $Ncf6a010
+push $N399698a0
  Viewer {
   input_process false
   name Viewer1

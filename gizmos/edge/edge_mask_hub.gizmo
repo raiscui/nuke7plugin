@@ -1,0 +1,405 @@
+#! C:/Program Files/Nuke6.3v4/Nuke6.3.exe -nx
+version 6.3 v4
+Group {
+ name edge_mask_hub
+ inputs 2
+ help "SHRINK/GROW :\n  -> Use 'invert order' to 'grow' mask before 'shrink'. If used 'shrink value' become grow one and vice versa.\n\nERODE(Glow) :\n  -> Use 'invert' to make it act as a 'Glow'"
+ tile_color 0xcc804eff
+ label "\[if \{\[value edgedetect]!=\"none\"\} \{return edgedetect\}]\n"
+ addUserKnob {20 edge_mask_hub}
+ addUserKnob {41 from0 l "input channel" T Channel_processed.from0}
+ addUserKnob {6 preClamp -STARTLINE}
+ addUserKnob {26 ""}
+ addUserKnob {4 edgedetect l EDGEDETECT M {none sobel blur "" "" ""}}
+ addUserKnob {7 blur_detect l blur -STARTLINE R 0 20}
+ blur_detect 4
+ addUserKnob {7 gainDetect l gain R 1 10}
+ gainDetect 1
+ addUserKnob {26 ""}
+ addUserKnob {7 shrink_level l INVISIBLE +INVISIBLE R 0 2}
+ shrink_level {{shrink_multiplier/10}}
+ addUserKnob {7 shrink_multiplier l INVISIBLE +INVISIBLE R 1 20}
+ shrink_multiplier {{shrink<0.1?0:shrink+0.5}}
+ addUserKnob {7 shrink l SHRINK R 0 30}
+ addUserKnob {7 grow_level l INVISIBLE +INVISIBLE R 0 20}
+ grow_level {{grow_multiplier/10}}
+ addUserKnob {7 grow_multiplier l INVISIBLE +INVISIBLE R 1 20}
+ grow_multiplier {{grow+0.8}}
+ addUserKnob {7 grow l GROW R 0 50}
+ addUserKnob {6 invert_order l "invert order" +STARTLINE}
+ addUserKnob {6 sharpen_edges +STARTLINE}
+ addUserKnob {7 level -STARTLINE}
+ level 0.74
+ addUserKnob {41 size l ERODE(Glow) t "Use 'invert' to make it act as a glow" T BlurErode.size}
+ addUserKnob {7 erode_mix l mix -STARTLINE}
+ erode_mix 1
+ addUserKnob {6 invert_erode l invert -STARTLINE}
+ addUserKnob {26 ""}
+ addUserKnob {41 size_1 l post_BLUR T PostBlur.size}
+ addUserKnob {7 details_erasing l INVISIBLE +INVISIBLE R 0 20}
+ addUserKnob {26 ""}
+ addUserKnob {41 out2 l "output layer" T copySelChannels.out2}
+ addUserKnob {6 invert_result l invert -STARTLINE}
+ addUserKnob {41 mix T MergeSource.mix}
+ addUserKnob {41 maskChannelMask l mask T MergeSource.maskChannelMask}
+}
+ Input {
+  inputs 0
+  name mask
+  xpos -803
+  ypos 953
+  number 1
+ }
+ Input {
+  inputs 0
+  name Input1
+  xpos -565
+  ypos 296
+ }
+set N16c81920 [stack 0]
+ Dot {
+  name Dot6
+  xpos -937
+  ypos 300
+ }
+ Dot {
+  name Dot8
+  xpos -929
+  ypos 933
+ }
+set N16c81f80 [stack 0]
+ Dot {
+  name Dot5
+  xpos -929
+  ypos 1039
+ }
+set N16c822b0 [stack 0]
+ Shuffle {
+  red white
+  green white
+  blue white
+  alpha white
+  name Shuffle1
+  xpos -913
+  ypos 1001
+ }
+ Switch {
+  inputs 2
+  which {{"\[ exists parent.input\[value mask.number] ]" i}}
+  name Switch1
+  xpos -803
+  ypos 1001
+ }
+push $N16c81f80
+push $N16c81920
+ Clamp {
+  channels rgba
+  mix {{parent.preClamp i}}
+  name Clamp_source
+  xpos -565
+  ypos 330
+ }
+set N16c82910 [stack 0]
+push $N16c82910
+ Copy {
+  inputs 2
+  from0 rgba.alpha
+  to0 rgba.alpha
+  name Channel_processed
+  xpos -565
+  ypos 366
+  disable {{"!\[ exists parent.input\[value Input1.number] ]"}}
+ }
+set N16c82c40 [stack 0]
+push $N16c82c40
+ Blur {
+  channels rgba
+  size {{parent.blur_detect i}}
+  name BlurExcluDetect
+  xpos -705
+  ypos 372
+ }
+ Merge2 {
+  inputs 2
+  operation exclusion
+  name ExcluDetect
+  xpos -705
+  ypos 406
+ }
+ Grade {
+  channels rgba
+  white {{parent.gainDetect i}}
+  white_clamp true
+  name Grade1
+  xpos -705
+  ypos 432
+ }
+push $N16c82c40
+ EdgeDetectWrapper {
+  channels alpha
+  name EdgeDetectWrapper1
+  xpos -435
+  ypos 366
+ }
+ Blur {
+  channels rgba
+  size {{parent.blur_detect i}}
+  name BlurSobel
+  xpos -435
+  ypos 404
+ }
+ Grade {
+  channels rgba
+  white {{parent.gainDetect i}}
+  white_clamp true
+  name Grade2
+  xpos -435
+  ypos 430
+ }
+push $N16c82c40
+ Switch {
+  inputs 3
+  which {{parent.edgedetect}}
+  name SwitchEdgeDetect
+  xpos -565
+  ypos 449
+ }
+ Invert {
+  channels rgba
+  name InvertSwap
+  xpos -565
+  ypos 489
+  disable {{!parent.invert_order}}
+ }
+set N16e2cb60 [stack 0]
+ Blur {
+  channels rgba
+  size {{GradeShrinkLevel.blackpoint*10*shrink_multiplier/2 i}}
+  name BlurShrink1
+  xpos -680
+  ypos 576
+ }
+ Blur {
+  channels rgba
+  size {{GradeShrinkLevel.blackpoint*10*shrink_multiplier/2}}
+  name BlurShrink2
+  xpos -680
+  ypos 600
+ }
+ Blur {
+  channels rgba
+  size {{GradeShrinkLevel.blackpoint*10*shrink_multiplier/2}}
+  name BlurShrink3
+  xpos -680
+  ypos 626
+ }
+ Grade {
+  channels rgba
+  blackpoint {{shrink_level<0.1&&shrink_level>0?0.99999-(0.1-shrink_level)/1:0.99999 i}}
+  name GradeShrink
+  xpos -557
+  ypos 626
+  disable {{parent.shrink_level>0?0:1 i}}
+ }
+set N16e2d820 [stack 0]
+ Blur {
+  channels rgba
+  size {{(1-GradeShrinkLevel.whitepoint)*10*grow_multiplier/2 i x516 5.2}}
+  name BlurGrow
+  xpos -461
+  ypos 626
+ }
+ Blur {
+  channels rgba
+  size {{(1-GradeShrinkLevel.whitepoint)*10*grow_multiplier/2 i x516 5.2 x590 6.861107666e-005}}
+  name BlurGrowMore
+  xpos -461
+  ypos 650
+ }
+ Blur {
+  channels rgba
+  size {{(1-GradeShrinkLevel.whitepoint)*10*grow_multiplier/2 x516 5.2 x590 6.861107666e-005}}
+  name BlurGrowMore1
+  xpos -461
+  ypos 676
+ }
+ Grade {
+  channels rgba
+  whitepoint {{grow_level<1&&grow_level>0?0.00001/pow(grow_level,4)*4:0.00004 i}}
+  name GradeGrow
+  xpos -461
+  ypos 725
+  disable {{parent.grow_level>0?0:1 i}}
+ }
+set N16e2e4e0 [stack 0]
+ Clamp {
+  channels rgba
+  name Clamp1
+  xpos -342
+  ypos 725
+ }
+ Grade {
+  channels rgba
+  blackpoint 0.35
+  whitepoint 0.65
+  white_clamp true
+  mix {{parent.shrink/5+parent.grow/5 i}}
+  name GradeSharpEdgeAuto
+  xpos -342
+  ypos 758
+ }
+ Grade {
+  channels rgba
+  blackpoint {{level*0.45 i}}
+  whitepoint {{1-level*.45 i}}
+  white_clamp true
+  mix {{parent.sharpen_edges i}}
+  name GradeSharpEdge
+  xpos -342
+  ypos 786
+ }
+ Invert {
+  channels rgba
+  name InvertSwap1
+  selected true
+  xpos -200
+  ypos 786
+  disable {{!parent.invert_order}}
+ }
+ Invert {
+  channels rgba
+  mix {{parent.invert_erode i}}
+  name Invert1
+  xpos -90
+  ypos 786
+ }
+ Dot {
+  name Dot7
+  xpos 20
+  ypos 789
+ }
+set N16e2f800 [stack 0]
+ Blur {
+  channels rgba
+  name BlurErode
+  label "\[value size]"
+  xpos 69
+  ypos 780
+ }
+ Grade {
+  channels rgba
+  blackpoint {{BlurErode.size>1?(.5-1/(BlurErode.size+.01)/400):0 i}}
+  white_clamp true
+  name GradeErode
+  xpos 69
+  ypos 831
+ }
+push $N16e2f800
+ Merge2 {
+  inputs 2
+  operation multiply
+  mix {{parent.erode_mix i}}
+  name Multiply
+  xpos -14
+  ypos 871
+  disable {{BlurErode.size==0 i}}
+ }
+set N16e30190 [stack 0]
+ Invert {
+  channels rgba
+  mix {{parent.invert_erode}}
+  name Invert2
+  xpos -165
+  ypos 871
+ }
+ Blur {
+  channels rgba
+  name PostBlur
+  label "\[value size]"
+  xpos -342
+  ypos 866
+ }
+ Shuffle {
+  red alpha
+  green alpha
+  blue alpha
+  name AlphaToRGB
+  xpos -557
+  ypos 872
+ }
+ ShuffleCopy {
+  inputs 2
+  red red
+  green green
+  blue blue
+  out2 rgba
+  name copySelChannels
+  xpos -557
+  ypos 929
+ }
+ Invert {
+  channels rgba
+  mix {{parent.invert_result i}}
+  name InvertEnd
+  xpos -557
+  ypos 972
+ }
+ Crop {
+  box {0 0 {Input1.width i} {Input1.height i}}
+  reformat true
+  crop false
+  name Crop1
+  xpos -557
+  ypos 998
+  disable true
+ }
+push $N16c822b0
+ Merge2 {
+  inputs 2+1
+  operation copy
+  name MergeSource
+  xpos -557
+  ypos 1035
+ }
+ Output {
+  name Output1
+  xpos -557
+  ypos 1088
+ }
+push $N16e30190
+push $N16e2e4e0
+ Grade {
+  channels rgba
+  blackpoint {{shrink_level>0?shrink_level+sqrt((1-shrink_level)*(shrink_multiplier*shrink_level/6)):0 i}}
+  whitepoint {{1/(grow_level+1)/(grow_level+1)/grow_multiplier i}}
+  white_clamp true
+  name GradeShrinkLevel
+  xpos -589
+  ypos 725
+  disable true
+ }
+push $N16e2cb60
+ Viewer {
+  inputs 3
+  input_process false
+  name Viewer1
+  xpos -183
+  ypos 617
+ }
+push $N16e2d820
+ Blur {
+  channels rgba
+  size {{(1-GradeShrinkLevel.whitepoint)*10*grow_multiplier i x516 5.2}}
+  name BlurGrow2
+  xpos -318
+  ypos 626
+ }
+push $N16e2cb60
+ Blur {
+  channels rgba
+  size {{GradeShrinkLevel.blackpoint*10*shrink_multiplier i}}
+  name BlurShrink
+  xpos -565
+  ypos 577
+ }
+end_group

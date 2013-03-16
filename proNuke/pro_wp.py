@@ -175,6 +175,31 @@ class proNF3pnode(object):
 			except Exception,e:
 				print e
 
+	def setCacheAuto(self):
+		sns =  self.getobjs()
+		if debug:print sns, 'setCacheAuto'
+		for sn in sns:
+			try:
+				fv ='auto'
+				#----------------------------------------------------------------------
+				f = sn.node('Read39').knob('cacheLocal')
+
+				f.setValue(fv)
+				#----------------------------------------------------------------------
+				#----------------------------------------------------------------------
+				f = sn.node('Read1').knob('cacheLocal')
+
+				f.setValue(fv)
+				#----------------------------------------------------------------------
+				#----------------------------------------------------------------------
+				f = sn.node('Read3').knob('cacheLocal')
+
+				f.setValue(fv)
+			#----------------------------------------------------------------------
+
+			except Exception,e:
+				print e
+
 class cSetSEFrameUI(Ui_Dialog,QtGui.QDialog):
 	def __init__(self, parent=None):
 		super(cSetSEFrameUI, self).__init__()
@@ -226,3 +251,9 @@ def setCacheAlways():
 	sns =  nuke.selectedNodes()
 	worker =  proNF3pnode(sns)
 	worker.setCacheAlways()
+
+def setCacheAuto():
+	sns =  nuke.selectedNodes()
+	worker =  proNF3pnode(sns)
+	worker.setCacheAuto()
+

@@ -41,6 +41,7 @@ menuBar.addCommand('Prometeus/设置3屏节点/开始结束帧','pro_wp.setSE()'
 menuBar.addCommand('Prometeus/设置3屏节点/重置帧表达式','pro_wp.resetSEEXP()')
 menuBar.addCommand('Prometeus/设置3屏节点/塌陷路径','pro_wp.dumpPath()')
 menuBar.addCommand('Prometeus/设置3屏节点/设置本地缓存always','pro_wp.setCacheAlways()')
+menuBar.addCommand('Prometeus/设置3屏节点/设置本地缓存auto','pro_wp.setCacheAuto()')
 import SubmitToDeadline
 menuBar.addCommand('Prometeus/发送到Deadline','SubmitToDeadline.main()')
 

@@ -1,0 +1,89 @@
+#! /home/rais/Nuke7.0v4/Nuke7.0 -nx
+version 7.0 v4
+Gizmo {
+ addUserKnob {20 User}
+ addUserKnob {41 white l gain T Grade9.white}
+ addUserKnob {41 mix T Merge2.mix}
+ addUserKnob {41 white_1 l gain T Grade1.white}
+}
+ Input {
+  inputs 0
+  name Input1
+  xpos 462
+  ypos -268
+ }
+ Dot {
+  name Dot5
+  xpos 496
+  ypos -227
+ }
+set N74efec0 [stack 0]
+ Laplacian {
+  channels rgb
+  size 1
+  name Laplacian2
+  xpos 599
+  ypos -230
+ }
+set N122da8f0 [stack 0]
+ Grade {
+  white 5
+  name Grade9
+  xpos 599
+  ypos -184
+ }
+push $N74efec0
+ Merge2 {
+  inputs 2
+  operation plus
+  Achannels {rgba.red rgba.green rgba.blue -rgba.alpha}
+  name Merge1
+  selected true
+  xpos 462
+  ypos -184
+  disable {{root.proxy==0?0:1}}
+ }
+ Dot {
+  name Dot40
+  xpos 496
+  ypos -133
+ }
+set Nd5d2f90 [stack 0]
+ Detail {
+  channels rgb
+  size 1
+  name Detail4
+  xpos 352
+  ypos -118
+  disable {{root.proxy}}
+ }
+push $Nd5d2f90
+ Merge2 {
+  inputs 2
+  operation multiply
+  Achannels rgba
+  Bchannels rgba
+  mix 0.5
+  name Merge2
+  xpos 460
+  ypos -114
+ }
+ Grade {
+  white 1.2
+  name Grade1
+  xpos 462
+  ypos -88
+ }
+ Output {
+  name Output1
+  xpos 462
+  ypos -12
+ }
+push $N122da8f0
+ Viewer {
+  input_process false
+  name Viewer1
+  xpos 267
+  ypos -235
+ }
+end_group
