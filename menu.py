@@ -11,13 +11,13 @@ if cge_debug:
 import SearchReplacePanel
 
 def addSRPanel():
-        '''Run the panel script and add it as a tab into the pane it is called from'''
-        myPanel = SearchReplacePanel.SearchReplacePanel()
-        return myPanel.addToPane()
- 
+	'''Run the panel script and add it as a tab into the pane it is called from'''
+	myPanel = SearchReplacePanel.SearchReplacePanel()
+	return myPanel.addToPane()
+
 #THIS LINE WILL ADD THE NEW ENTRY TO THE PANE MENU
 nuke.menu('Pane').addCommand('SearchReplace', addSRPanel)
- 
+
 #THIS LINE WILL REGISTER THE PANEL SO IT CAN BE RESTORED WITH LAYOUTS
 nukescripts.registerPanel('com.ohufx.SearchReplace', addSRPanel)
 
@@ -44,6 +44,9 @@ menuBar.addCommand('Prometeus/设置3屏节点/设置本地缓存always','pro_wp
 menuBar.addCommand('Prometeus/设置3屏节点/设置本地缓存auto','pro_wp.setCacheAuto()')
 import SubmitToDeadline
 menuBar.addCommand('Prometeus/发送到Deadline','SubmitToDeadline.main()')
+from proNuke import openFolder
+menuBar.addCommand('Prometeus/openFolder','openFolder.do()', 'ctrl+alt+f')
+
 
 #****************** time end *******************
 cge_debug = globals().get('cge_debug', None)
